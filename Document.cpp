@@ -4,7 +4,7 @@
 #include <sstream>
 #include <cassert>
 #include "Document.h"
-#include "markdown-tokens.h"
+#include "tokens.h"
 
 using boost::optional;
 using boost::none;
@@ -52,10 +52,10 @@ namespace {
             if (boost::regex_search(prev, end, m, cHtmlTokenExpression)) {
                 if (prev!=m[0].first) {
                     //cerr << "  Non-tag (" << distance(prev, m[0].first) << "): " << string(prev, m[0].first) << endl;
-                    r.push_back(TokenPtr(new markdown::token::InlineHtmlContents(string(prev, m[0].first))));
+                    r.push_back(TokenPtr(new markdown::InlineHtmlContents(string(prev, m[0].first))));
                 }
                 //cerr << "  Tag: " << m[1] << endl;
-                r.push_back(TokenPtr(new markdown::token::HtmlTag(m[1])));
+                r.push_back(TokenPtr(new markdown::HtmlTag(m[1])));
                 prev=m[0].second;
             } else {
                 string eol;
@@ -64,7 +64,7 @@ namespace {
                     //cerr << "  Non-tag: " << eol << endl;
                 }
                 eol+='\n';
-                r.push_back(TokenPtr(new markdown::token::InlineHtmlContents(eol)));
+                r.push_back(TokenPtr(new markdown::InlineHtmlContents(eol)));
                 break;
             }
         }
@@ -99,7 +99,7 @@ namespace {
 
             bool tag=false, comment=false;
             optional<HtmlTagInfo> tagInfo=parseHtmlTag(line.begin(), line.end(), cStarts);
-            if (tagInfo && markdown::token::isValidTag(tagInfo->tagName)>1) {
+            if (tagInfo && markdown::isValidTag(tagInfo->tagName)>1) {
                 tag=true;
             } else if (isHtmlCommentStart(line.begin(), line.end())) {
                 comment=true;
@@ -135,9 +135,9 @@ namespace {
                     }
                 } while (i!=end && !done);
 
-                if (lines>1 || markdown::token::isValidTag(tagInfo->tagName, true)>1) {
+                if (lines>1 || markdown::isValidTag(tagInfo->tagName, true)>1) {
                     i=prevLine;
-                    return TokenPtr(new markdown::token::InlineHtmlBlock(contents));
+                    return TokenPtr(new markdown::InlineHtmlBlock(contents));
                 } else {
                     // Single-line HTML "blocks" whose initial tags are span-tags
                     // don't qualify as inline HTML.
@@ -153,7 +153,7 @@ namespace {
 
                 bool done=false;
                 do {
-                    if ((*i)->text()) contents.push_back(TokenPtr(new markdown::token::InlineHtmlComment(*(*i)->text()+'\n')));
+                    if ((*i)->text()) contents.push_back(TokenPtr(new markdown::InlineHtmlComment(*(*i)->text()+'\n')));
                     else contents.push_back(*i);
 
                     prevLine=i;
@@ -169,7 +169,7 @@ namespace {
                     }
                 } while (i!=end && !done);
                 i=prevLine;
-                return TokenPtr(new markdown::token::InlineHtmlBlock(contents));
+                return TokenPtr(new markdown::InlineHtmlBlock(contents));
             }
         }
 
@@ -210,7 +210,7 @@ namespace {
                     if (contents) out << *contents << '\n';
                     else break;
                 }
-                return TokenPtr(new markdown::token::CodeBlock(out.str()));
+                return TokenPtr(new markdown::CodeBlock(out.str()));
             }
         }
         return none;
@@ -238,7 +238,7 @@ namespace {
                 boost::regex continuationExpression=boost::regex("^((?: {0,3}>){"+boost::lexical_cast<string>(quoteLevel)+"}) ?(.*)$");
 
                 markdown::TokenGroup subTokens;
-                subTokens.push_back(TokenPtr(new markdown::token::RawText(m[2])));
+                subTokens.push_back(TokenPtr(new markdown::RawText(m[2])));
 
                 // The next line can be a continuation of this quote (with or
                 // without the prefix string) or a blank line. Blank lines are
@@ -258,8 +258,8 @@ namespace {
                             if (boost::regex_match(line, m, continuationExpression)) {
                                 if (m[1].matched && m[1].length()>0) {
                                     i=++ii;
-                                    subTokens.push_back(TokenPtr(new markdown::token::BlankLine));
-                                    subTokens.push_back(TokenPtr(new markdown::token::RawText(m[2])));
+                                    subTokens.push_back(TokenPtr(new markdown::BlankLine));
+                                    subTokens.push_back(TokenPtr(new markdown::RawText(m[2])));
                                 } else break;
                             } else break;
                         }
@@ -267,14 +267,14 @@ namespace {
                         const string& line(*(*i)->text());
                         if (boost::regex_match(line, m, continuationExpression)) {
                             assert(m[2].matched);
-                            if (!isBlankLine(m[2])) subTokens.push_back(TokenPtr(new markdown::token::RawText(m[2])));
-                            else subTokens.push_back(TokenPtr(new markdown::token::BlankLine(m[2])));
+                            if (!isBlankLine(m[2])) subTokens.push_back(TokenPtr(new markdown::RawText(m[2])));
+                            else subTokens.push_back(TokenPtr(new markdown::BlankLine(m[2])));
                             ++i;
                         } else break;
                     }
                 }
 
-                return TokenPtr(new markdown::token::BlockQuote(subTokens));
+                return TokenPtr(new markdown::BlockQuote(subTokens));
             }
         }
         return none;
@@ -302,7 +302,7 @@ namespace {
                 if (sub || indent<4) {
                     type=cUnordered;
                     char startChar=*m[2].first;
-                    subItemTokens.push_back(TokenPtr(new markdown::token::RawText(m[3])));
+                    subItemTokens.push_back(TokenPtr(new markdown::RawText(m[3])));
 
                     ostringstream next;
                     next << "^" << string(indent, ' ') << "\\" << startChar << " +([^*-].*)$";
@@ -312,7 +312,7 @@ namespace {
                 indent=m[1].length();
                 if (sub || indent<4) {
                     type=cOrdered;
-                    subItemTokens.push_back(TokenPtr(new markdown::token::RawText(m[3])));
+                    subItemTokens.push_back(TokenPtr(new markdown::RawText(m[3])));
 
                     ostringstream next;
                     next << "^" << string(indent, ' ') << "[0-9]+\\. +(.*)$";
@@ -375,15 +375,15 @@ namespace {
                                 nextItem=cAnotherItem;
                             } else if (boost::regex_match(line, m, continuedAfterBlankLineExpression)) {
                                 assert(m[1].matched);
-                                subItemTokens.push_back(TokenPtr(new markdown::token::BlankLine()));
-                                subItemTokens.push_back(TokenPtr(new markdown::token::RawText(m[1])));
+                                subItemTokens.push_back(TokenPtr(new markdown::BlankLine()));
+                                subItemTokens.push_back(TokenPtr(new markdown::RawText(m[1])));
                                 i=++ii;
                                 continue;
                             } else if (boost::regex_match(line, m, codeBlockAfterBlankLineExpression)) {
                                 setParagraphMode=true;
                                 ++itemCount;
                                 assert(m[1].matched);
-                                subItemTokens.push_back(TokenPtr(new markdown::token::BlankLine()));
+                                subItemTokens.push_back(TokenPtr(new markdown::BlankLine()));
 
                                 string codeBlock=m[1]+'\n';
                                 ++ii;
@@ -405,7 +405,7 @@ namespace {
                                     ++ii;
                                 }
 
-                                subItemTokens.push_back(TokenPtr(new markdown::token::CodeBlock(codeBlock)));
+                                subItemTokens.push_back(TokenPtr(new markdown::CodeBlock(codeBlock)));
                                 i=ii;
                                 continue;
                             } else {
@@ -431,7 +431,7 @@ namespace {
                             } else {
                                 boost::regex_match(line, m, cContinuedItemExpression);
                                 assert(m[1].matched);
-                                subItemTokens.push_back(TokenPtr(new markdown::token::RawText(m[1])));
+                                subItemTokens.push_back(TokenPtr(new markdown::RawText(m[1])));
                                 ++i;
                                 continue;
                             }
@@ -439,13 +439,13 @@ namespace {
                     } else nextItem=cEndOfList;
 
                     if (!subItemTokens.empty()) {
-                        subTokens.push_back(TokenPtr(new markdown::token::ListItem(subItemTokens)));
+                        subTokens.push_back(TokenPtr(new markdown::ListItem(subItemTokens)));
                         subItemTokens.clear();
                     }
 
                     assert(nextItem!=cUnknown);
                     if (nextItem==cAnotherItem) {
-                        subItemTokens.push_back(TokenPtr(new markdown::token::RawText(m[1])));
+                        subItemTokens.push_back(TokenPtr(new markdown::RawText(m[1])));
                         ++itemCount;
                         ++i;
                     } else { // nextItem==cEndOfList
@@ -455,15 +455,15 @@ namespace {
 
                 // In case we hit the end with an unterminated item...
                 if (!subItemTokens.empty()) {
-                    subTokens.push_back(TokenPtr(new markdown::token::ListItem(subItemTokens)));
+                    subTokens.push_back(TokenPtr(new markdown::ListItem(subItemTokens)));
                     subItemTokens.clear();
                 }
 
                 if (itemCount>1 || indent!=0) {
                     if (type==cUnordered) {
-                        return TokenPtr(new markdown::token::UnorderedList(subTokens, setParagraphMode));
+                        return TokenPtr(new markdown::UnorderedList(subTokens, setParagraphMode));
                     } else {
-                        return TokenPtr(new markdown::token::OrderedList(subTokens, setParagraphMode));
+                        return TokenPtr(new markdown::OrderedList(subTokens, setParagraphMode));
                     }
                 } else {
                     // It looked like a list, but turned out to be a false alarm.
@@ -513,16 +513,16 @@ namespace {
         paragraphTokens, markdown::TokenGroup& finalTokens, bool noParagraphs)
     {
         if (!paragraphText.empty()) {
-            paragraphTokens.push_back(TokenPtr(new markdown::token::RawText(paragraphText)));
+            paragraphTokens.push_back(TokenPtr(new markdown::RawText(paragraphText)));
             paragraphText.clear();
         }
 
         if (!paragraphTokens.empty()) {
             if (noParagraphs) {
                 if (paragraphTokens.size()>1) {
-                    finalTokens.push_back(TokenPtr(new markdown::token::Container(paragraphTokens)));
+                    finalTokens.push_back(TokenPtr(new markdown::Container(paragraphTokens)));
                 } else finalTokens.push_back(*paragraphTokens.begin());
-            } else finalTokens.push_back(TokenPtr(new markdown::token::Paragraph(paragraphTokens)));
+            } else finalTokens.push_back(TokenPtr(new markdown::Paragraph(paragraphTokens)));
             paragraphTokens.clear();
         }
     }
@@ -534,7 +534,7 @@ namespace {
             const string& line=*(*i)->text();
             boost::smatch m;
             if (boost::regex_match(line, m, cHashHeaders))
-                return TokenPtr(new markdown::token::Header(m[1].length(), m[2]));
+                return TokenPtr(new markdown::Header(m[1].length(), m[2]));
 
             // Underlined type
             CTokenGroupIter ii=i;
@@ -544,7 +544,7 @@ namespace {
                 const string& line=*(*ii)->text();
                 if (boost::regex_match(line, m, cUnderlinedHeaders)) {
                     char typeChar=string(m[1])[0];
-                    TokenPtr p=TokenPtr(new markdown::token::Header((typeChar=='='
+                    TokenPtr p=TokenPtr(new markdown::Header((typeChar=='='
                         ? 1 : 2), *(*i)->text()));
                     i=ii;
                     return p;
@@ -559,7 +559,7 @@ namespace {
             static const boost::regex cHorizontalRules("^ {0,3}((?:-|\\*|_) *){3,}$");
             const string& line=*(*i)->text();
             if (boost::regex_match(line, cHorizontalRules)) {
-                return TokenPtr(new markdown::token::HtmlTag("hr/"));
+                return TokenPtr(new markdown::HtmlTag("hr/"));
             }
         }
         return none;
@@ -594,14 +594,14 @@ namespace {
     const size_t Document::cDefaultSpacesPerTab=cSpacesPerInitialTab;
 
     Document::Document(size_t spacesPerTab): cSpacesPerTab(spacesPerTab),
-        mTokenContainer(new token::Container), mIdTable(new LinkIds),
+        mTokenContainer(new Container), mIdTable(new LinkIds),
         mProcessed(false)
     {
         // This space deliberately blank ;-)
     }
 
     Document::Document(istream& in, size_t spacesPerTab):
-        cSpacesPerTab(spacesPerTab), mTokenContainer(new token::Container),
+        cSpacesPerTab(spacesPerTab), mTokenContainer(new Container),
         mIdTable(new LinkIds), mProcessed(false)
     {
         read(in);
@@ -658,16 +658,16 @@ namespace {
     bool Document::read(istream& in) {
         if (mProcessed) return false;
 
-        token::Container *tokens=dynamic_cast<token::Container*>(mTokenContainer.get());
+        Container *tokens=dynamic_cast<Container*>(mTokenContainer.get());
         assert(tokens!=0);
 
         string line;
         TokenGroup tgt;
         while (getline(in, line)) {
             if (isBlankLine(line)) {
-                tgt.push_back(TokenPtr(new token::BlankLine(line)));
+                tgt.push_back(TokenPtr(new BlankLine(line)));
             } else {
-                tgt.push_back(TokenPtr(new token::RawText(line)));
+                tgt.push_back(TokenPtr(new RawText(line)));
             }
         }
         tokens->appendSubtokens(tgt);
@@ -680,7 +680,7 @@ namespace {
      */
     void Document::write(ostream& out) {
         process();
-        mTokenContainer->writeAsHtml(out);
+        mTokenContainer->interprete_to_html(out);
     }
 
     /**
@@ -718,7 +718,7 @@ namespace {
 
         TokenGroup processed;
 
-        token::Container *tokens = dynamic_cast<token::Container *>(mTokenContainer.get());
+        Container *tokens = dynamic_cast<Container *>(mTokenContainer.get());
 
         assert(tokens != 0);
 
@@ -728,7 +728,7 @@ namespace {
                 ++i2;
 
                 if (i2 != tokens->subTokens().end() && (*i2)->text() && boost::regex_match(*(*i2)->text(), html_end)) {
-                    processed.push_back(TokenPtr(new markdown::token::RawText(*(*i)->text() + ' ' + *(*i2)->text())));
+                    processed.push_back(TokenPtr(new markdown::RawText(*(*i)->text() + ' ' + *(*i2)->text())));
                     ++i;
                     continue;
                 }
@@ -743,7 +743,7 @@ namespace {
     void Document::processInlineHtmlAndReferences() {
         TokenGroup processed;
 
-        token::Container *tokens = dynamic_cast<token::Container *>(mTokenContainer.get());
+        Container *tokens = dynamic_cast<Container *>(mTokenContainer.get());
 
         assert(tokens!=0);
 
@@ -788,7 +788,7 @@ namespace {
             return;
         }
 
-        token::Container *tokens = dynamic_cast<token::Container *>(inTokenContainer.get());
+        Container *tokens = dynamic_cast<Container *>(inTokenContainer.get());
 
         assert(tokens != 0);
 
@@ -828,7 +828,7 @@ namespace {
     }
 
     void Document::processParagraphLines(TokenPtr inTokenContainer) {
-        token::Container *tokens = dynamic_cast<token::Container *>(inTokenContainer.get());
+        Container *tokens = dynamic_cast<Container *>(inTokenContainer.get());
 
         assert(tokens != 0);
 
@@ -858,7 +858,7 @@ namespace {
                     paragraphText += m[1];
 
                     flushParagraph(paragraphText, paragraphTokens, processed, noPara);
-                    processed.push_back(TokenPtr(new markdown::token::HtmlTag("br/")));
+                    processed.push_back(TokenPtr(new markdown::HtmlTag("br/")));
                 }
                 else {
                     paragraphText += *(*ii)->text();
