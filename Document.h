@@ -1,14 +1,12 @@
 #ifndef DOCUMENT_H
 #define DOCUMENT_H
 
-#include <iostream>
-#include <string>
-#include <list>
-
-// #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/optional.hpp>
 #include <boost/unordered_map.hpp>
+#include <iostream>
+#include <string>
+#include <list>
 
 using namespace std;
 
@@ -24,7 +22,6 @@ namespace markdown {
 	typedef list<TokenPtr> TokenGroup;
 
 	class Document {
-	// class Document : private boost::noncopyable {
 		public:
 		Document(size_t spacesPerTab = cDefaultSpacesPerTab);
 		Document(istream& in, size_t spacesPerTab = cDefaultSpacesPerTab);
@@ -37,11 +34,6 @@ namespace markdown {
 		bool read(istream&);
 		void write(ostream&);       // Mode normal
 		void writeTokens(ostream&); // Pour débugger
-
-		// The class is marked noncopyable because it uses reference-counted
-		// links to things that get changed during processing. If you want to
-		// copy it, use the `copy` function to explicitly say that.
-		// Document copy() const; // TODO: Copy function not yet written.
 
 		private:
 		static const size_t cSpacesPerInitialTab, cDefaultSpacesPerTab;
