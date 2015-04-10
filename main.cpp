@@ -1,4 +1,4 @@
-// g++ main.cpp markdown.cpp markdown-tokens.cpp -lboost_regex
+// g++ main.cpp Document.cpp tokens.cpp -lboost_regex
 
 #include <iostream>
 #include <sstream>
