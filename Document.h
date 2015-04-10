@@ -48,12 +48,12 @@ namespace markdown {
 		TokenPtr mTokenContainer;
 		LinkIds *mIdTable;
 		bool mProcessed;
-		bool _getline(istream& in, string& line);
+		bool getline(istream& in, string& line);
 		void process();
-		void _mergeMultilineHtmlTags();
-		void _processInlineHtmlAndReferences();
-		void _processBlocksItems(TokenPtr inTokenContainer);
-		void _processParagraphLines(TokenPtr inTokenContainer);
+		void mergeMultilineHtmlTags();
+		void processInlineHtmlAndReferences();
+		void processBlocksItems(TokenPtr inTokenContainer);
+		void processParagraphLines(TokenPtr inTokenContainer);
 	};
 }
 

@@ -627,29 +627,42 @@ bool Document::read(const std::string& src) {
 	return read(in);
 }
 
-bool Document::_getline(std::istream& in, std::string& line) {
+bool Document::getline(std::istream& in, std::string& line) {
 	// Handles \n, \r, and \r\n (and even \n\r) on any system. Also does tab-
 	// expansion, since this is the most efficient place for it.
 	line.clear();
 
 	bool initialWhitespace=true;
 	char c;
+
 	while (in.get(c)) {
-		if (c=='\r') {
-			if ((in.get(c)) && c!='\n') in.unget();
+		if (c == '\r') {
+			if ((in.get(c)) && c != '\n') {
+				in.unget();
+			}
+
 			return true;
-		} else if (c=='\n') {
-			if ((in.get(c)) && c!='\r') in.unget();
+		}
+		else if (c == '\n') {
+			if ((in.get(c)) && c != '\r') {
+				in.unget();
+			}
+
 			return true;
-		} else if (c=='\t') {
-			size_t convert=(initialWhitespace ? cSpacesPerInitialTab :
-				cSpacesPerTab);
-			line+=std::string(convert-(line.length()%convert), ' ');
-		} else {
+		}
+		else if (c == '\t') {
+			size_t convert = (initialWhitespace ? cSpacesPerInitialTab : cSpacesPerTab);
+			line += std::string(convert - (line.length() % convert), ' ');
+		}
+		else {
 			line.push_back(c);
-			if (c!=' ') initialWhitespace=false;
+
+			if (c != ' ') {
+				initialWhitespace=false;
+			}
 		}
 	}
+
 	return !line.empty();
 }
 
@@ -661,7 +674,7 @@ bool Document::read(std::istream& in) {
 
 	std::string line;
 	TokenGroup tgt;
-	while (_getline(in, line)) {
+	while (getline(in, line)) {
 		if (isBlankLine(line)) {
 			tgt.push_back(TokenPtr(new token::BlankLine(line)));
 		} else {
@@ -685,16 +698,17 @@ void Document::writeTokens(std::ostream& out) {
 
 void Document::process() {
 	if (!mProcessed) {
-		_mergeMultilineHtmlTags();
-		_processInlineHtmlAndReferences();
-		_processBlocksItems(mTokenContainer);
-		_processParagraphLines(mTokenContainer);
+		mergeMultilineHtmlTags();
+		processInlineHtmlAndReferences();
+		processBlocksItems(mTokenContainer);
+		processParagraphLines(mTokenContainer);
 		mTokenContainer->processSpanElements(*mIdTable);
-		mProcessed=true;
+
+		mProcessed = true;
 	}
 }
 
-void Document::_mergeMultilineHtmlTags() {
+void Document::mergeMultilineHtmlTags() {
 	static const boost::regex cHtmlTokenStart("<((/?)([a-zA-Z0-9]+)(?:( +[a-zA-Z0-9]+?(?: ?= ?(\"|').*?\\5))*? */? *))$");
 	static const boost::regex cHtmlTokenEnd("^ *((?:( +[a-zA-Z0-9]+?(?: ?= ?(\"|').*?\\3))*? */? *))>");
 
@@ -722,7 +736,7 @@ void Document::_mergeMultilineHtmlTags() {
 	tokens->swapSubtokens(processed);
 }
 
-void Document::_processInlineHtmlAndReferences() {
+void Document::processInlineHtmlAndReferences() {
 	TokenGroup processed;
 
 	token::Container *tokens=dynamic_cast<token::Container*>(mTokenContainer.get());
@@ -756,7 +770,7 @@ void Document::_processInlineHtmlAndReferences() {
 	tokens->swapSubtokens(processed);
 }
 
-void Document::_processBlocksItems(TokenPtr inTokenContainer) {
+void Document::processBlocksItems(TokenPtr inTokenContainer) {
 	if (!inTokenContainer->isContainer()) return;
 
 	token::Container *tokens=dynamic_cast<token::Container*>(inTokenContainer.get());
@@ -776,27 +790,27 @@ void Document::_processBlocksItems(TokenPtr inTokenContainer) {
 			if (!subitem) subitem=parseCodeBlock(ii, iie);
 
 			if (subitem) {
-				_processBlocksItems(*subitem);
+				processBlocksItems(*subitem);
 				processed.push_back(*subitem);
 				if (ii==iie) break;
 				continue;
 			} else processed.push_back(*ii);
 		} else if ((*ii)->isContainer()) {
-			_processBlocksItems(*ii);
+			processBlocksItems(*ii);
 			processed.push_back(*ii);
 		}
 	}
 	tokens->swapSubtokens(processed);
 }
 
-void Document::_processParagraphLines(TokenPtr inTokenContainer) {
+void Document::processParagraphLines(TokenPtr inTokenContainer) {
 	token::Container *tokens=dynamic_cast<token::Container*>(inTokenContainer.get());
 	assert(tokens!=0);
 
 	bool noPara=tokens->inhibitParagraphs();
 	for (TokenGroup::const_iterator ii=tokens->subTokens().begin(),
 		iie=tokens->subTokens().end(); ii!=iie; ++ii)
-			if ((*ii)->isContainer()) _processParagraphLines(*ii);
+			if ((*ii)->isContainer()) processParagraphLines(*ii);
 
 	TokenGroup processed;
 	std::string paragraphText;
@@ -825,5 +839,4 @@ void Document::_processParagraphLines(TokenPtr inTokenContainer) {
 
 	tokens->swapSubtokens(processed);
 }
-
-} // namespace markdown
+}
