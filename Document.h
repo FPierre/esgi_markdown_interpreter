@@ -26,7 +26,6 @@ namespace markdown {
 		Document(size_t spacesPerTab = cDefaultSpacesPerTab);
 		Document(istream& in, size_t spacesPerTab = cDefaultSpacesPerTab);
 		~Document();
-
 		// You can call read() functions multiple times before writing if desirable.
 		// Once the document has been processed for writing, it can't accept any more input.
 		bool read(const string&);
@@ -40,12 +39,13 @@ namespace markdown {
 		TokenPtr mTokenContainer;
 		LinkIds *mIdTable;
 		bool mProcessed;
+
 		bool getline(istream& in, string& line);
-		void process();
-		void mergeMultilineHtmlTags();
-		void processInlineHtmlAndReferences();
-		void processBlocksItems(TokenPtr inTokenContainer);
-		void processParagraphLines(TokenPtr inTokenContainer);
+		void process();                                        // Méthode de réunification des sous-méthodes suivantes
+		void mergeMultilineHtmlTags();                         //
+		void processInlineHtmlAndReferences();                 //
+		void processBlocksItems(TokenPtr inTokenContainer);    //
+		void processParagraphLines(TokenPtr inTokenContainer); //
 	};
 }
 
