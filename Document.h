@@ -27,9 +27,8 @@ namespace markdown {
 		Document(istream& in, size_t spacesPerTab = cDefaultSpacesPerTab);
 		~Document();
 
-		// You can call read() functions multiple times before writing if
-		// desirable. Once the document has been processed for writing, it can't
-		// accept any more input.
+		// You can call read() functions multiple times before writing if desirable.
+		// Once the document has been processed for writing, it can't accept any more input.
 		bool read(const string&);
 		bool read(istream&);
 		void write(ostream&);       // Mode normal

@@ -676,16 +676,25 @@ bool Document::read(istream& in) {
 	return true;
 }
 
+/**
+ * Méthode principale d'interprétation
+ */
 void Document::write(ostream& out) {
 	process();
 	mTokenContainer->writeAsHtml(out);
 }
 
+/**
+ * Pour débug
+ */
 void Document::writeTokens(ostream& out) {
 	process();
 	mTokenContainer->writeToken(0, out);
 }
 
+/**
+ * Méthode de réunification de sous-méthodes
+ */
 void Document::process() {
 	if (!mProcessed) {
 		mergeMultilineHtmlTags();
