@@ -744,24 +744,31 @@ void Document::mergeMultilineHtmlTags() {
 void Document::processInlineHtmlAndReferences() {
     TokenGroup processed;
 
-    token::Container *tokens=dynamic_cast<token::Container*>(mTokenContainer.get());
+    token::Container *tokens = dynamic_cast<token::Container *>(mTokenContainer.get());
+
     assert(tokens!=0);
 
-    for (TokenGroup::const_iterator ii=tokens->subTokens().begin(),
-        iie=tokens->subTokens().end(); ii!=iie; ++ii)
-    {
+    for (TokenGroup::const_iterator ii=tokens->subTokens().begin(), iie=tokens->subTokens().end(); ii!=iie; ++ii) {
         if ((*ii)->text()) {
             if (processed.empty() || processed.back()->isBlankLine()) {
-                optional<TokenPtr> inlineHtml=parseInlineHtml(ii, iie);
+                optional<TokenPtr> inlineHtml = parseInlineHtml(ii, iie);
+
                 if (inlineHtml) {
                     processed.push_back(*inlineHtml);
-                    if (ii==iie) break;
+
+                    if (ii == iie) {
+                        break;
+                    }
+
                     continue;
                 }
             }
 
             if (parseReference(ii, iie, *mIdTable)) {
-                if (ii==iie) break;
+                if (ii == iie) {
+                    break;
+                }
+
                 continue;
             }
 
@@ -770,70 +777,95 @@ void Document::processInlineHtmlAndReferences() {
             // later pass, since we can't easily tell where paragraphs
             // end until then.
         }
+
         processed.push_back(*ii);
     }
+
     tokens->swapSubtokens(processed);
 }
 
 void Document::processBlocksItems(TokenPtr inTokenContainer) {
-    if (!inTokenContainer->isContainer()) return;
+    if (!inTokenContainer->isContainer()) {
+        return;
+    }
 
-    token::Container *tokens=dynamic_cast<token::Container*>(inTokenContainer.get());
-    assert(tokens!=0);
+    token::Container *tokens = dynamic_cast<token::Container *>(inTokenContainer.get());
+
+    assert(tokens !=0);
 
     TokenGroup processed;
 
-    for (TokenGroup::const_iterator ii=tokens->subTokens().begin(),
-        iie=tokens->subTokens().end(); ii!=iie; ++ii)
-    {
+    for (TokenGroup::const_iterator ii = tokens->subTokens().begin(), iie = tokens->subTokens().end(); ii != iie; ++ii) {
         if ((*ii)->text()) {
             optional<TokenPtr> subitem;
-            if (!subitem) subitem=parseHeader(ii, iie);
-            if (!subitem) subitem=parseHorizontalRule(ii, iie);
-            if (!subitem) subitem=parseListBlock(ii, iie);
-            if (!subitem) subitem=parseBlockQuote(ii, iie);
-            if (!subitem) subitem=parseCodeBlock(ii, iie);
+
+            if (!subitem) subitem = parseHeader(ii, iie);
+            if (!subitem) subitem = parseHorizontalRule(ii, iie);
+            if (!subitem) subitem = parseListBlock(ii, iie);
+            if (!subitem) subitem = parseBlockQuote(ii, iie);
+            if (!subitem) subitem = parseCodeBlock(ii, iie);
 
             if (subitem) {
                 processBlocksItems(*subitem);
                 processed.push_back(*subitem);
-                if (ii==iie) break;
+
+                if (ii == iie) {
+                    break;
+                }
+
                 continue;
-            } else processed.push_back(*ii);
-        } else if ((*ii)->isContainer()) {
+            }
+            else {
+                processed.push_back(*ii);
+            }
+        }
+        else if ((*ii)->isContainer()) {
             processBlocksItems(*ii);
             processed.push_back(*ii);
         }
     }
+
     tokens->swapSubtokens(processed);
 }
 
 void Document::processParagraphLines(TokenPtr inTokenContainer) {
-    token::Container *tokens=dynamic_cast<token::Container*>(inTokenContainer.get());
-    assert(tokens!=0);
+    token::Container *tokens = dynamic_cast<token::Container *>(inTokenContainer.get());
 
-    bool noPara=tokens->inhibitParagraphs();
-    for (TokenGroup::const_iterator ii=tokens->subTokens().begin(),
-        iie=tokens->subTokens().end(); ii!=iie; ++ii)
-            if ((*ii)->isContainer()) processParagraphLines(*ii);
+    assert(tokens != 0);
+
+    bool noPara = tokens->inhibitParagraphs();
+
+    for (TokenGroup::const_iterator ii = tokens->subTokens().begin(), iie = tokens->subTokens().end(); ii != iie; ++ii) {
+        if ((*ii)->isContainer()) {
+            processParagraphLines(*ii);
+        }
+    }
 
     TokenGroup processed;
     string paragraphText;
     TokenGroup paragraphTokens;
-    for (TokenGroup::const_iterator ii=tokens->subTokens().begin(),
-        iie=tokens->subTokens().end(); ii!=iie; ++ii)
-    {
+
+    for (TokenGroup::const_iterator ii = tokens->subTokens().begin(), iie = tokens->subTokens().end(); ii != iie; ++ii) {
         if ((*ii)->text() && (*ii)->canContainMarkup() && !(*ii)->inhibitParagraphs()) {
             static const boost::regex cExpression("^(.*)  $");
-            if (!paragraphText.empty()) paragraphText+=" ";
+
+            if (!paragraphText.empty()) {
+                paragraphText += " ";
+            }
 
             boost::smatch m;
+
             if (boost::regex_match(*(*ii)->text(), m, cExpression)) {
                 paragraphText += m[1];
+
                 flushParagraph(paragraphText, paragraphTokens, processed, noPara);
                 processed.push_back(TokenPtr(new markdown::token::HtmlTag("br/")));
-            } else paragraphText += *(*ii)->text();
-        } else {
+            }
+            else {
+                paragraphText += *(*ii)->text();
+            }
+        }
+        else {
             flushParagraph(paragraphText, paragraphTokens, processed, noPara);
             processed.push_back(*ii);
         }
