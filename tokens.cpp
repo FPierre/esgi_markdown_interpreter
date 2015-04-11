@@ -8,7 +8,6 @@ using namespace std;
 
 namespace markdown {
 
-        namespace {
 
 const string cEscapedCharacters("\\`*_{}[]()#+-.!>");
 
@@ -202,8 +201,6 @@ string cleanTextLinkRef(const string& ref) {
     return r;
 }
 
-}
-
 size_t isValidTag(const string& tag, bool nonBlockFirst) {
     if (blockTags.empty()) {
         initTag(otherTags, other_tags);
@@ -348,10 +345,16 @@ string RawText::_processEscapedCharacters(const string& src) {
             ++i;
 
             if (i != end) {
-                optional<size_t> e=isEscapedCharacter(*i);
-                if (e) tgt+="\x01@#"+boost::lexical_cast<string>(*e)+"@escaped\x01";
-                else tgt=tgt+'\\'+*i;
-                prev=i+1;
+                optional<size_t> e = isEscapedCharacter(*i);
+
+                if (e) {
+                    tgt += "\x01@#" + boost::lexical_cast<string>(*e) + "@escaped\x01";
+                }
+                else {
+                    tgt = tgt + '\\' + *i;
+                }
+
+                prev = i + 1;
             }
             else {
                 tgt += '\\';
@@ -371,16 +374,22 @@ string RawText::_processSpaceBracketedGroupings(const string &src, ReplacementTa
     static const boost::regex cRemove("(?:(?: \\*+ )|(?: _+ ))");
 
     string tgt;
-    string::const_iterator prev=src.begin(), end=src.end();
+    string::const_iterator prev = src.begin();
+    string::const_iterator end  = src.end();
+
     while (1) {
         boost::smatch m;
+
         if (boost::regex_search(prev, end, m, cRemove)) {
-            tgt+=string(prev, m[0].first);
-            tgt+="\x01@"+boost::lexical_cast<string>(replacements.size())+"@spaceBracketed\x01";
+            tgt += string(prev, m[0].first);
+            tgt += "\x01@" + boost::lexical_cast<string>(replacements.size()) + "@spaceBracketed\x01";
+
             replacements.push_back(TokenPtr(new RawText(m[0])));
-            prev=m[0].second;
-        } else {
-            tgt+=string(prev, end);
+
+            prev = m[0].second;
+        }
+        else {
+            tgt += string(prev, end);
             break;
         }
     }
@@ -414,18 +423,24 @@ string RawText::_processLinksImagesAndTags(const string &src, ReplacementTable& 
     // contents, 8=actual tag from 7.
 
     string tgt;
-    string::const_iterator prev=src.begin(), end=src.end();
+    string::const_iterator prev = src.begin();
+    string::const_iterator end  = src.end();
+
     while (1) {
         boost::smatch m;
+
         if (boost::regex_search(prev, end, m, cExpression)) {
             assert(m[0].matched);
-            assert(m[0].length()!=0);
+            assert(m[0].length() != 0);
 
-            tgt+=string(prev, m[0].first);
-            tgt+="\x01@"+boost::lexical_cast<string>(replacements.size())+"@links&Images1\x01";
-            prev=m[0].second;
+            tgt += string(prev, m[0].first);
+            tgt += "\x01@" + boost::lexical_cast<string>(replacements.size()) + "@links&Images1\x01";
+            prev = m[0].second;
 
-            bool isImage=false, isLink=false, isReference=false;
+            bool isImage     = false;
+            bool isLink      = false;
+            bool isReference = false;
+
             if (m[4].matched && m[4].length()) isImage=isReference=true;
             else if (m[1].matched && m[1].length()) isImage=true;
             else if (m[5].matched) isLink=isReference=true;
@@ -434,14 +449,18 @@ string RawText::_processLinksImagesAndTags(const string &src, ReplacementTable& 
             if (isImage || isLink) {
                 string contentsOrAlttext, url, title;
                 bool resolved=false;
+
                 if (isReference) {
                     contentsOrAlttext=m[5];
                     string linkId=(m[6].matched ? string(m[6]) : string());
+
                     if (linkId.empty()) linkId=cleanTextLinkRef(contentsOrAlttext);
 
                     optional<markdown::LinkIds::Target> target=idTable.find(linkId);
-                    if (target) { url=target->url; title=target->title; resolved=true; };
-                } else {
+
+                    if (target) { url = target->url; title = target->title; resolved = true; };
+                }
+                else {
                     static const boost::regex cReference("^<?([^ >]*)>?(?: *(?:('|\")(.*)\\2)|(?:\\((.*)\\)))? *$");
                     // Useful captures: 1=url, 3/4=title
                     contentsOrAlttext=m[2];
@@ -460,13 +479,14 @@ string RawText::_processLinksImagesAndTags(const string &src, ReplacementTable& 
                     // searching after it.
                     prev=m[0].first+1;
                     replacements.push_back(TokenPtr(new RawText(string(m[0].first, prev))));
-                } else if (isImage) {
-                    replacements.push_back(TokenPtr(new Image(contentsOrAlttext,
-                        url, title)));
-                } else {
+                }
+                else if (isImage) {
+                    replacements.push_back(TokenPtr(new Image(contentsOrAlttext, url, title)));
+                }
+                else {
                     replacements.push_back(TokenPtr(new HtmlAnchorTag(url, title)));
-                    tgt+=contentsOrAlttext;
-                    tgt+="\x01@"+boost::lexical_cast<string>(replacements.size())+"@links&Images2\x01";
+                    tgt += contentsOrAlttext;
+                    tgt += "\x01@"+boost::lexical_cast<string>(replacements.size())+"@links&Images2\x01";
                     replacements.push_back(TokenPtr(new HtmlTag("/a")));
                 }
             }
@@ -523,28 +543,26 @@ TokenGroup RawText::_processBoldAndItalicSpans(const string& src, ReplacementTab
         boost::smatch m;
 
         if (boost::regex_search(prev, end, m, cEmphasisExpression)) {
-            if (prev!=m[0].first) tgt.push_back(TokenPtr(new
-                RawText(string(prev, m[0].first))));
+            if (prev!=m[0].first) tgt.push_back(TokenPtr(new RawText(string(prev, m[0].first))));
+
             if (m[3].matched) {
                 string token=m[3];
-                tgt.push_back(TokenPtr(new BoldOrItalicMarker(true, token[0],
-                    token.length())));
+                tgt.push_back(TokenPtr(new BoldOrItalicMarker(true, token[0], token.length())));
                 prev=m[0].second;
             }
             else if (m[4].matched) {
                 string token=m[4];
-                tgt.push_back(TokenPtr(new BoldOrItalicMarker(false, token[0],
-                    token.length())));
-                prev=m[0].second;
+                tgt.push_back(TokenPtr(new BoldOrItalicMarker(false, token[0], token.length())));
+
+                prev = m[0].second;
             }
             else {
                 string token=m[1], contents=m[2];
-                tgt.push_back(TokenPtr(new BoldOrItalicMarker(true, token[0],
-                    token.length())));
+                tgt.push_back(TokenPtr(new BoldOrItalicMarker(true, token[0], token.length())));
                 tgt.push_back(TokenPtr(new RawText(string(contents))));
-                tgt.push_back(TokenPtr(new BoldOrItalicMarker(false, token[0],
-                    token.length())));
-                prev=m[0].second;
+                tgt.push_back(TokenPtr(new BoldOrItalicMarker(false, token[0], token.length())));
+
+                prev = m[0].second;
             }
         }
         else {
@@ -557,7 +575,7 @@ TokenGroup RawText::_processBoldAndItalicSpans(const string& src, ReplacementTab
 
     for (TokenGroup::iterator ii=tgt.begin(), iie=tgt.end(); ii!=iie; ++ii) {
         if ((*ii)->isUnmatchedOpenMarker()) {
-            BoldOrItalicMarker *openToken=dynamic_cast<BoldOrItalicMarker*>(ii->get());
+            BoldOrItalicMarker *openToken=dynamic_cast<BoldOrItalicMarker *>(ii->get());
 
             // Find a matching close-marker, if it's there
             TokenGroup::iterator iii=ii;
@@ -581,15 +599,14 @@ TokenGroup RawText::_processBoldAndItalicSpans(const string& src, ReplacementTab
                         continue;
                     }
 
-                    if (closeToken->tokenCharacter()==openToken->tokenCharacter()
-                        && closeToken->size()==openToken->size())
-                    {
+                    if (closeToken->tokenCharacter()==openToken->tokenCharacter() && closeToken->size()==openToken->size()) {
                         openToken->matched(closeToken, id);
                         closeToken->matched(openToken, id);
+
                         ++id;
                         break;
                     }
-                    else if (openToken->size()==3) {
+                    else if (openToken->size() == 3) {
                         // Split the open-token into a match for the close-token
                         // and a second for the leftovers.
                         openToken->disable();
@@ -597,9 +614,8 @@ TokenGroup RawText::_processBoldAndItalicSpans(const string& src, ReplacementTab
                         g.push_back(TokenPtr(new BoldOrItalicMarker(true,
                             openToken->tokenCharacter(), openToken->size()-
                             closeToken->size())));
-                        g.push_back(TokenPtr(new BoldOrItalicMarker(true,
-                            openToken->tokenCharacter(), closeToken->size())));
-                        TokenGroup::iterator after=ii;
+                        g.push_back(TokenPtr(new BoldOrItalicMarker(true, openToken->tokenCharacter(), closeToken->size())));
+                        TokenGroup::iterator after = ii;
                         ++after;
                         tgt.splice(after, g);
                         break;
@@ -611,6 +627,7 @@ TokenGroup RawText::_processBoldAndItalicSpans(const string& src, ReplacementTab
 
     // "Unmatch" invalidly-nested matches.
     stack<BoldOrItalicMarker*> openMatches;
+
     for (TokenGroup::iterator ii=tgt.begin(), iie=tgt.end(); ii!=iie; ++ii) {
         if ((*ii)->isMatchedOpenMarker()) {
             BoldOrItalicMarker *open=dynamic_cast<BoldOrItalicMarker*>(ii->get());
@@ -625,17 +642,20 @@ TokenGroup RawText::_processBoldAndItalicSpans(const string& src, ReplacementTab
             }
             else {
                 openMatches.pop();
-                while (!openMatches.empty() && openMatches.top()->matchedTo()==0)
+
+                while (!openMatches.empty() && openMatches.top()->matchedTo()==0) {
                     openMatches.pop();
+                }
             }
         }
     }
 
     TokenGroup r;
 
-    for (TokenGroup::iterator ii=tgt.begin(), iie=tgt.end(); ii!=iie; ++ii) {
+    for (TokenGroup::iterator ii = tgt.begin(), iie = tgt.end(); ii != iie; ++ii) {
         if ((*ii)->text() && (*ii)->canContainMarkup()) {
-            TokenGroup t=_encodeProcessedItems(*(*ii)->text(), replacements);
+            TokenGroup t = _encodeProcessedItems(*(*ii)->text(), replacements);
+
             r.splice(r.end(), t);
         }
         else {
@@ -678,11 +698,16 @@ TokenGroup RawText::_encodeProcessedItems(const string &src, ReplacementTable& r
             } // Otherwise just eat it
         }
         else {
-            string pre=string(prev, src.end());
-            if (!pre.empty()) r.push_back(TokenPtr(new RawText(pre)));
+            string pre = string(prev, src.end());
+
+            if (!pre.empty()) {
+                r.push_back(TokenPtr(new RawText(pre)));
+            }
+
             break;
         }
     }
+
     return r;
 }
 
@@ -757,8 +782,11 @@ void CodeSpan::writeAsOriginal(ostream& out) const {
 
 void Container::interprete_to_html(ostream& out) const {
     preWrite(out);
-    for (CTokenGroupIter i=mSubTokens.begin(), ie=mSubTokens.end(); i!=ie; ++i)
+
+    for (CTokenGroupIter i=mSubTokens.begin(), ie=mSubTokens.end(); i!=ie; ++i) {
         (*i)->interprete_to_html(out);
+    }
+
     postWrite(out);
 }
 
@@ -779,7 +807,10 @@ optional<TokenGroup> Container::processSpanElements(const LinkIds& idTable) {
             if (subt) {
                 if (subt->size()>1) t.push_back(TokenPtr(new Container(*subt)));
                 else if (!subt->empty()) t.push_back(*subt->begin());
-            } else t.push_back(*ii);
+            }
+            else {
+                t.push_back(*ii);
+            }
         }
         else {
             optional<TokenGroup> subt=(*ii)->processSpanElements(idTable);

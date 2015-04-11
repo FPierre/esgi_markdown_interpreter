@@ -4,65 +4,56 @@
 #include <vector>
 #include "Document.h"
 
+// TEST
+#include "Token.h"
+
 namespace markdown {
 
-typedef TokenGroup::iterator TokenGroupIter;
-typedef TokenGroup::const_iterator CTokenGroupIter;
+// typedef TokenGroup::iterator TokenGroupIter;
+// typedef TokenGroup::const_iterator CTokenGroupIter;
 
-class LinkIds {
-    public:
-    struct Target {
-        string url;
-        string title;
+// class LinkIds {
+//     public:
+//     struct Target {
+//         string url;
+//         string title;
+//         Target(const string& url_, const string& title_) : url(url_), title(title_) { }
+//     };
 
-        Target(const string& url_, const string& title_):
-            url(url_), title(title_) { }
-    };
+//     optional<Target> find(const string& id) const;
+//     void add(const string& id, const string& url, const string& title);
 
-    optional<Target> find(const string& id) const;
-    void add(const string& id, const string& url, const
-        string& title);
+//     private:
+//     typedef boost::unordered_map<string, Target> Table;
+//     static string _scrubKey(string str);
+//     Table mTable;
+// };
 
-    private:
-    typedef boost::unordered_map<string, Target> Table;
+// class Token {
+//     public:
+//     Token() { }
+//     virtual void interprete_to_html(ostream&) const=0;
+//     virtual void writeAsOriginal(ostream& out) const { interprete_to_html(out); }
+//     virtual void writeToken(ostream& out) const=0;
+//     virtual void writeToken(size_t indent, ostream& out) const {
+//         out << string(indent*2, ' ');
+//         writeToken(out);
+//     }
+//     virtual optional<TokenGroup> processSpanElements(const LinkIds& idTable) { return none; }
+//     virtual optional<const string&> text() const { return none; }
+//     virtual bool canContainMarkup() const { return false; }
+//     virtual bool isBlankLine() const { return false; }
+//     virtual bool isContainer() const { return false; }
+//     virtual bool isUnmatchedOpenMarker() const { return false; }
+//     virtual bool isUnmatchedCloseMarker() const { return false; }
+//     virtual bool isMatchedOpenMarker() const { return false; }
+//     virtual bool isMatchedCloseMarker() const { return false; }
+//     virtual bool inhibitParagraphs() const { return false; }
 
-    static string _scrubKey(string str);
-
-    Table mTable;
-};
-
-class Token {
-    public:
-    Token() { }
-
-    virtual void interprete_to_html(ostream&) const=0;
-    virtual void writeAsOriginal(ostream& out) const { interprete_to_html(out); }
-    virtual void writeToken(ostream& out) const=0;
-    virtual void writeToken(size_t indent, ostream& out) const {
-        out << string(indent*2, ' ');
-        writeToken(out);
-    }
-
-    virtual optional<TokenGroup> processSpanElements(const LinkIds& idTable)
-        { return none; }
-
-    virtual optional<const string&> text() const { return none; }
-
-    virtual bool canContainMarkup() const { return false; }
-    virtual bool isBlankLine() const { return false; }
-    virtual bool isContainer() const { return false; }
-    virtual bool isUnmatchedOpenMarker() const { return false; }
-    virtual bool isUnmatchedCloseMarker() const { return false; }
-    virtual bool isMatchedOpenMarker() const { return false; }
-    virtual bool isMatchedCloseMarker() const { return false; }
-    virtual bool inhibitParagraphs() const { return false; }
-
-    protected:
-    virtual void preWrite(ostream& out) const { }
-    virtual void postWrite(ostream& out) const { }
-};
-
-
+//     protected:
+//     virtual void preWrite(ostream& out) const { }
+//     virtual void postWrite(ostream& out) const { }
+// };
 
 size_t isValidTag(const string& tag, bool nonBlockFirst=false);
 
@@ -73,13 +64,9 @@ class TextHolder: public Token {
     TextHolder(const string& text, bool canContainMarkup, unsigned int
         encodingFlags): mText(text), mCanContainMarkup(canContainMarkup),
         mEncodingFlags(encodingFlags) { }
-
     virtual void interprete_to_html(ostream& out) const;
-
     virtual void writeToken(ostream& out) const { out << "TextHolder: " << mText << '\n'; }
-
     virtual optional<const string&> text() const { return mText; }
-
     virtual bool canContainMarkup() const { return mCanContainMarkup; }
 
     private:
@@ -94,19 +81,16 @@ class RawText: public TextHolder {
         TextHolder(text, canContainMarkup, cAmps|cAngles|cQuotes) { }
 
     virtual void writeToken(ostream& out) const { out << "RawText: " << *text() << '\n'; }
-
     virtual optional<TokenGroup> processSpanElements(const LinkIds& idTable);
 
     private:
     typedef vector<TokenPtr> ReplacementTable;
-
     static string _processHtmlTagAttributes(string src, ReplacementTable& replacements);
     static string _processCodeSpans(string src, ReplacementTable& replacements);
     static string _processEscapedCharacters(const string& src);
     static string _processLinksImagesAndTags(const string& src, ReplacementTable& replacements, const LinkIds& idTable);
     static string _processSpaceBracketedGroupings(const string& src, ReplacementTable& replacements);
     static TokenGroup _processBoldAndItalicSpans(const string& src, ReplacementTable& replacements);
-
     static TokenGroup _encodeProcessedItems(const string& src, ReplacementTable& replacements);
     static string _restoreProcessedItems(const string &src, ReplacementTable& replacements);
 };
@@ -114,7 +98,6 @@ class RawText: public TextHolder {
 class HtmlTag: public TextHolder {
     public:
     HtmlTag(const string& contents): TextHolder(contents, false, cAmps|cAngles) { }
-
     virtual void writeToken(ostream& out) const { out << "HtmlTag: " << *text() << '\n'; }
 
     protected:
@@ -125,41 +108,31 @@ class HtmlTag: public TextHolder {
 class HtmlAnchorTag: public TextHolder {
     public:
     HtmlAnchorTag(const string& url, const string& title=string());
-
     virtual void writeToken(ostream& out) const { out << "HtmlAnchorTag: " << *text() << '\n'; }
 };
 
 class InlineHtmlContents: public TextHolder {
     public:
-    InlineHtmlContents(const string& contents): TextHolder(contents, false,
-        cAmps|cAngles) { }
-
+    InlineHtmlContents(const string& contents): TextHolder(contents, false, cAmps|cAngles) { }
     virtual void writeToken(ostream& out) const { out << "InlineHtmlContents: " << *text() << '\n'; }
 };
 
 class InlineHtmlComment: public TextHolder {
     public:
-    InlineHtmlComment(const string& contents): TextHolder(contents, false,
-        0) { }
-
+    InlineHtmlComment(const string& contents): TextHolder(contents, false, 0) { }
     virtual void writeToken(ostream& out) const { out << "InlineHtmlComment: " << *text() << '\n'; }
 };
 
 class CodeBlock: public TextHolder {
     public:
-    CodeBlock(const string& actualContents): TextHolder(actualContents,
-        false, cDoubleAmps|cAngles|cQuotes) { }
-
+    CodeBlock(const string& actualContents): TextHolder(actualContents, false, cDoubleAmps|cAngles|cQuotes) { }
     virtual void interprete_to_html(ostream& out) const;
-
     virtual void writeToken(ostream& out) const { out << "CodeBlock: " << *text() << '\n'; }
 };
 
 class CodeSpan: public TextHolder {
     public:
-    CodeSpan(const string& actualContents): TextHolder(actualContents,
-        false, cDoubleAmps|cAngles|cQuotes) { }
-
+    CodeSpan(const string& actualContents): TextHolder(actualContents, false, cDoubleAmps|cAngles|cQuotes) { }
     virtual void interprete_to_html(ostream& out) const;
     virtual void writeAsOriginal(ostream& out) const;
     virtual void writeToken(ostream& out) const { out << "CodeSpan: " << *text() << '\n'; }
@@ -167,12 +140,8 @@ class CodeSpan: public TextHolder {
 
 class Header: public TextHolder {
     public:
-    Header(size_t level, const string& text): TextHolder(text, true,
-        cAmps|cAngles|cQuotes), mLevel(level) { }
-
-    virtual void writeToken(ostream& out) const { out << "Header " <<
-        mLevel << ": " << *text() << '\n'; }
-
+    Header(size_t level, const string& text): TextHolder(text, true, cAmps|cAngles|cQuotes), mLevel(level) { }
+    virtual void writeToken(ostream& out) const { out << "Header " << mLevel << ": " << *text() << '\n'; }
     virtual bool inhibitParagraphs() const { return true; }
 
     protected:
@@ -185,18 +154,14 @@ class Header: public TextHolder {
 
 class BlankLine: public TextHolder {
     public:
-    BlankLine(const string& actualContents=string()):
-        TextHolder(actualContents, false, 0) { }
-
+    BlankLine(const string& actualContents=string()) : TextHolder(actualContents, false, 0) { }
     virtual void writeToken(ostream& out) const { out << "BlankLine: " << *text() << '\n'; }
-
     virtual bool isBlankLine() const { return true; }
 };
 
 class EscapedCharacter: public Token {
     public:
     EscapedCharacter(char c): mChar(c) { }
-
     virtual void interprete_to_html(ostream& out) const { out << mChar; }
     virtual void writeAsOriginal(ostream& out) const { out << '\\' << mChar; }
     virtual void writeToken(ostream& out) const { out << "EscapedCharacter: " << mChar << '\n'; }
@@ -207,22 +172,15 @@ class EscapedCharacter: public Token {
 
 class Container: public Token {
     public:
-    Container(const TokenGroup& contents=TokenGroup()): mSubTokens(contents),
-        mParagraphMode(false) { }
-
+    Container(const TokenGroup& contents=TokenGroup()): mSubTokens(contents), mParagraphMode(false) { }
     const TokenGroup& subTokens() const { return mSubTokens; }
     void appendSubtokens(TokenGroup& tokens) { mSubTokens.splice(mSubTokens.end(), tokens); }
     void swapSubtokens(TokenGroup& tokens) { mSubTokens.swap(tokens); }
-
     virtual bool isContainer() const { return true; }
-
     virtual void interprete_to_html(ostream& out) const;
-
     virtual void writeToken(ostream& out) const { out << "Container: error!" << '\n'; }
     virtual void writeToken(size_t indent, ostream& out) const;
-
     virtual optional<TokenGroup> processSpanElements(const LinkIds& idTable);
-
     virtual TokenPtr clone(const TokenGroup& newContents) const { return TokenPtr(new Container(newContents)); }
     virtual string containerName() const { return "Container"; }
 
@@ -233,8 +191,7 @@ class Container: public Token {
 
 class InlineHtmlBlock: public Container {
     public:
-    InlineHtmlBlock(const TokenGroup& contents, bool isBlockTag=false):
-        Container(contents), mIsBlockTag(isBlockTag) { }
+    InlineHtmlBlock(const TokenGroup& contents, bool isBlockTag=false) : Container(contents), mIsBlockTag(isBlockTag) { }
     InlineHtmlBlock(const string& contents): mIsBlockTag(false) {
         mSubTokens.push_back(TokenPtr(new InlineHtmlContents(contents)));
     }
