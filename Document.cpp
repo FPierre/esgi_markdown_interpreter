@@ -1,10 +1,29 @@
+#include <cassert>
+#include <sstream>
 #include <boost/regex.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
-#include <sstream>
-#include <cassert>
 #include "Document.h"
 #include "tokens.h"
+
+// TEST
+#include "Container.h"
+#include "tags/BlankLine.h"
+#include "tags/BlockQuote.h"
+#include "tags/CodeBlock.h"
+#include "tags/CodeSpan.h"
+#include "tags/EscapedCharacter.h"
+#include "tags/Header.h"
+#include "tags/HtmlAnchorTag.h"
+#include "tags/HtmlTag.h"
+#include "tags/InlineHtmlBlock.h"
+#include "tags/InlineHtmlComment.h"
+#include "tags/InlineHtmlContents.h"
+#include "tags/ListItem.h"
+#include "tags/OrderedList.h"
+#include "tags/Paragraph.h"
+#include "tags/RawText.h"
+#include "tags/UnorderedList.h"
 
 using boost::optional;
 using boost::none;
@@ -71,18 +90,14 @@ namespace {
         return r;
     }
 
-    bool isHtmlCommentStart(string::const_iterator begin,
-        string::const_iterator end)
-    {
+    bool isHtmlCommentStart(string::const_iterator begin, string::const_iterator end) {
         // It can't be a single-line comment, those will already have been parsed
         // by isBlankLine.
         static const boost::regex cExpression("^<!--");
         return boost::regex_search(begin, end, cExpression);
     }
 
-    bool isHtmlCommentEnd(string::const_iterator begin,
-        string::const_iterator end)
-    {
+    bool isHtmlCommentEnd(string::const_iterator begin, string::const_iterator end) {
         static const boost::regex cExpression(".*-- *>$");
         return boost::regex_match(begin, end, cExpression);
     }
@@ -99,9 +114,11 @@ namespace {
 
             bool tag=false, comment=false;
             optional<HtmlTagInfo> tagInfo=parseHtmlTag(line.begin(), line.end(), cStarts);
+
             if (tagInfo && markdown::isValidTag(tagInfo->tagName)>1) {
                 tag=true;
-            } else if (isHtmlCommentStart(line.begin(), line.end())) {
+            }
+            else if (isHtmlCommentStart(line.begin(), line.end())) {
                 comment=true;
             }
 
@@ -113,13 +130,15 @@ namespace {
                 size_t lines=0;
 
                 bool done=false;
+
                 do {
                     // We encode HTML tags so that their contents gets properly
                     // handled -- i.e. "<div style=">"/>" becomes <div style="&gt;"/>
                     if ((*i)->text()) {
                         markdown::TokenGroup t=parseInlineHtmlText(*(*i)->text());
                         contents.splice(contents.end(), t);
-                    } else contents.push_back(*i);
+                    }
+                    else contents.push_back(*i);
 
                     prevLine=i;
                     ++i;
@@ -128,7 +147,8 @@ namespace {
                     if (i!=end && (*i)->isBlankLine() && (*prevLine)->text()) {
                         if (prevLine==firstLine) {
                             done=true;
-                        } else {
+                        }
+                        else {
                             const string& text(*(*prevLine)->text());
                             if (parseHtmlTag(text.begin(), text.end(), cAlone)) done=true;
                         }
@@ -138,13 +158,15 @@ namespace {
                 if (lines>1 || markdown::isValidTag(tagInfo->tagName, true)>1) {
                     i=prevLine;
                     return TokenPtr(new markdown::InlineHtmlBlock(contents));
-                } else {
+                }
+                else {
                     // Single-line HTML "blocks" whose initial tags are span-tags
                     // don't qualify as inline HTML.
                     i=firstLine;
                     return none;
                 }
-            } else if (comment) {
+            }
+            else if (comment) {
                 // Comment continues until a closing tag is found; at present, it
                 // also has to be the last thing on the line, and has to be
                 // immediately followed by a blank line too.
@@ -169,6 +191,7 @@ namespace {
                     }
                 } while (i!=end && !done);
                 i=prevLine;
+
                 return TokenPtr(new markdown::InlineHtmlBlock(contents));
             }
         }
@@ -185,17 +208,20 @@ namespace {
                 if (r) return string("\n"+*r);
             }
             --i;
-        } else if ((*i)->text() && (*i)->canContainMarkup()) {
+        }
+        else if ((*i)->text() && (*i)->canContainMarkup()) {
             const string& line(*(*i)->text());
             if (line.length()>=4) {
                 string::const_iterator si=line.begin(), sie=si+4;
                 while (si!=sie && *si==' ') ++si;
+
                 if (si==sie) {
                     ++i;
                     return string(si, line.end());
                 }
             }
         }
+
         return none;
     }
 
@@ -571,22 +597,24 @@ namespace {
 
     namespace markdown {
 
-    optional<LinkIds::Target> LinkIds::find(const string& id) const {
-        Table::const_iterator i=mTable.find(_scrubKey(id));
-        if (i!=mTable.end()) return i->second;
-        else return none;
-    }
+    // Déplacés dans class LinkIds
 
-    void LinkIds::add(const string& id, const string& url, const
-        string& title)
-    {
-        mTable.insert(make_pair(_scrubKey(id), Target(url, title)));
-    }
+    // optional<LinkIds::Target> LinkIds::find(const string& id) const {
+    //     Table::const_iterator i=mTable.find(_scrubKey(id));
+    //     if (i!=mTable.end()) return i->second;
+    //     else return none;
+    // }
 
-    string LinkIds::_scrubKey(string str) {
-        boost::algorithm::to_lower(str);
-        return str;
-    }
+    // void LinkIds::add(const string& id, const string& url, const
+    //     string& title)
+    // {
+    //     mTable.insert(make_pair(_scrubKey(id), Target(url, title)));
+    // }
+
+    // string LinkIds::_scrubKey(string str) {
+    //     boost::algorithm::to_lower(str);
+    //     return str;
+    // }
 
 
 
