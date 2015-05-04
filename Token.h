@@ -5,8 +5,6 @@
 #include <string>
 #include <vector>
 #include "Document.h"
-
-// TEST
 #include "LinkIds.h"
 
 using namespace std;

@@ -1,12 +1,4 @@
-#ifndef LINKIDS_H
-#define LINKIDS_H
-
-#include <string>
-
-using boost::optional;
-using boost::unordered_map;
-
-using namespace std;
+#include "LinkIds.h"
 
 namespace markdown {
     optional<LinkIds::Target> LinkIds::find(const string& id) const {

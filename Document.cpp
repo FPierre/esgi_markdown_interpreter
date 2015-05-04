@@ -1,12 +1,11 @@
+#include "Document.h"
+
 #include <cassert>
 #include <sstream>
 #include <boost/regex.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
-#include "Document.h"
-#include "tokens.h"
 
-// TEST
 #include "Container.h"
 #include "tags/BlankLine.h"
 #include "tags/BlockQuote.h"
@@ -241,8 +240,6 @@ namespace {
         }
         return none;
     }
-
-
 
     size_t countQuoteLevel(const string& prefixString) {
         size_t r=0;
@@ -594,44 +591,21 @@ namespace {
     } // namespace
 
 
-
-    namespace markdown {
-
-    // Déplacés dans class LinkIds
-
-    // optional<LinkIds::Target> LinkIds::find(const string& id) const {
-    //     Table::const_iterator i=mTable.find(_scrubKey(id));
-    //     if (i!=mTable.end()) return i->second;
-    //     else return none;
-    // }
-
-    // void LinkIds::add(const string& id, const string& url, const
-    //     string& title)
-    // {
-    //     mTable.insert(make_pair(_scrubKey(id), Target(url, title)));
-    // }
-
-    // string LinkIds::_scrubKey(string str) {
-    //     boost::algorithm::to_lower(str);
-    //     return str;
-    // }
-
-
-
+namespace markdown {
     const size_t Document::cSpacesPerInitialTab=4; // Required by Markdown format
     const size_t Document::cDefaultSpacesPerTab=cSpacesPerInitialTab;
 
-    Document::Document(size_t spacesPerTab): cSpacesPerTab(spacesPerTab),
-        mTokenContainer(new Container), mIdTable(new LinkIds),
-        mProcessed(false)
-    {
+    Document::Document(size_t spacesPerTab) : cSpacesPerTab(spacesPerTab),
+                                              mTokenContainer(new Container),
+                                              mIdTable(new LinkIds),
+                                              mProcessed(false) {
         // This space deliberately blank ;-)
     }
 
-    Document::Document(istream& in, size_t spacesPerTab):
-        cSpacesPerTab(spacesPerTab), mTokenContainer(new Container),
-        mIdTable(new LinkIds), mProcessed(false)
-    {
+    Document::Document(istream& in, size_t spacesPerTab) : cSpacesPerTab(spacesPerTab),
+                                                           mTokenContainer(new Container),
+                                                           mIdTable(new LinkIds),
+                                                           mProcessed(false) {
         read(in);
     }
 
@@ -641,6 +615,7 @@ namespace {
 
     bool Document::read(const string& src) {
         istringstream in(src);
+
         return read(in);
     }
 

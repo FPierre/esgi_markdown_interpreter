@@ -1,12 +1,12 @@
 #ifndef DOCUMENT_H
 #define DOCUMENT_H
 
-#include <string>
-#include <iostream>
-#include <list>
 #include <boost/shared_ptr.hpp>
 #include <boost/optional.hpp>
 #include <boost/unordered_map.hpp>
+#include <iostream>
+#include <string>
+#include <list>
 
 using namespace std;
 
@@ -23,6 +23,17 @@ namespace markdown {
     typedef list<TokenPtr> TokenGroup;
 
     class Document {
+        public:
+        Document(size_t spacesPerTab = cDefaultSpacesPerTab);
+        Document(istream& in, size_t spacesPerTab = cDefaultSpacesPerTab);
+        ~Document();
+        // You can call read() functions multiple times before writing if desirable.
+        // Once the document has been processed for writing, it can't accept any more input.
+        bool read(const string&);
+        bool read(istream&);
+        void write(ostream&);       // Mode normal
+        void writeTokens(ostream&); // Pour débugger
+
         private:
         static const size_t cSpacesPerInitialTab, cDefaultSpacesPerTab;
         const size_t cSpacesPerTab;
@@ -36,17 +47,6 @@ namespace markdown {
         void processInlineHtmlAndReferences();                 //
         void processBlocksItems(TokenPtr inTokenContainer);    //
         void processParagraphLines(TokenPtr inTokenContainer); //
-
-        public:
-        Document(size_t spacesPerTab = cDefaultSpacesPerTab);
-        Document(istream& in, size_t spacesPerTab = cDefaultSpacesPerTab);
-        ~Document();
-        // You can call read() functions multiple times before writing if desirable.
-        // Once the document has been processed for writing, it can't accept any more input.
-        bool read(const string&);
-        bool read(istream&);
-        void write(ostream&);       // Mode normal
-        void writeTokens(ostream&); // Pour débugger
     };
 }
 

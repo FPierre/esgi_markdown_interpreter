@@ -1,5 +1,14 @@
 #include <boost/regex.hpp>
+#include <stack>
 #include "RawText.h"
+#include "../Container.h"
+#include "../Document.h"
+#include "CodeSpan.h"
+#include "HtmlAnchorTag.h"
+#include "EscapedCharacter.h"
+#include "HtmlTag.h"
+#include "Image.h"
+#include "BoldOrItalicMarker.h"
 
 using namespace std;
 
@@ -19,17 +28,17 @@ namespace markdown {
 
         ReplacementTable replacements;
 
-        string str= _processHtmlTagAttributes(*text(), replacements);
-        str       = _processCodeSpans(str, replacements);
-        str       = _processEscapedCharacters(str);
-        str       = _processLinksImagesAndTags(str, replacements, idTable);
+        string str = _processHtmlTagAttributes(*text(), replacements);
+        str        = _processCodeSpans(str, replacements);
+        str        = _processEscapedCharacters(str);
+        str        = _processLinksImagesAndTags(str, replacements, idTable);
 
         return _processBoldAndItalicSpans(str, replacements);
     }
 
     typedef vector<TokenPtr> ReplacementTable;
 
-    static string RawText::_processHtmlTagAttributes(string src, ReplacementTable& replacements) {
+    string RawText::_processHtmlTagAttributes(string src, ReplacementTable& replacements) {
         // Because "Attribute Content Is Not A Code Span"
         string tgt;
         string::const_iterator prev = src.begin(), end = src.end();
@@ -42,6 +51,7 @@ namespace markdown {
                 // NOTE: Kludge alert! The `isValidTag` test is a cheat, only here
                 // to handle some edge cases between the Markdown test suite and the
                 // PHP-Markdown one, which seem to conflict.
+                // TODO: bug et visiblement inutile, donc commenté
                 if (isValidTag(m[3])) {
                     tgt += string(prev, m[0].first);
 
@@ -82,7 +92,7 @@ namespace markdown {
         return tgt;
     }
 
-    static string RawText::_processCodeSpans(string src, ReplacementTable& replacements) {
+    string RawText::_processCodeSpans(string src, ReplacementTable& replacements) {
         static const boost::regex cCodeSpan[2]={
             boost::regex("(?:^|(?<=[^\\\\]))`` (.+?) ``"),
             boost::regex("(?:^|(?<=[^\\\\]))`(.+?)`")
@@ -115,7 +125,7 @@ namespace markdown {
         return src;
     }
 
-    static string RawText::_processEscapedCharacters(const string& src) {
+    string RawText::_processEscapedCharacters(const string& src) {
         string tgt;
         string::const_iterator prev=src.begin(), end=src.end();
 
@@ -152,7 +162,7 @@ namespace markdown {
         return tgt;
     }
 
-    static string RawText::_processLinksImagesAndTags(const string& src, ReplacementTable& replacements, const LinkIds& idTable) {
+    string RawText::_processLinksImagesAndTags(const string& src, ReplacementTable& replacements, const LinkIds& idTable) {
         // NOTE: Kludge alert! The "inline link or image" regex should be...
         //
         //   "(?:(!?)\\[(.+?)\\] *\\((.*?)\\))"
@@ -285,7 +295,7 @@ namespace markdown {
         return tgt;
     }
 
-    static string RawText::_processSpaceBracketedGroupings(const string& src, ReplacementTable& replacements) {
+    string RawText::_processSpaceBracketedGroupings(const string& src, ReplacementTable& replacements) {
         static const boost::regex cRemove("(?:(?: \\*+ )|(?: _+ ))");
 
         string tgt;
@@ -311,7 +321,7 @@ namespace markdown {
         return tgt;
     }
 
-    static TokenGroup RawText::_processBoldAndItalicSpans(const string& src, ReplacementTable& replacements) {
+    TokenGroup RawText::_processBoldAndItalicSpans(const string& src, ReplacementTable& replacements) {
         static const boost::regex cEmphasisExpression(
             "(?:(?<![*_])([*_]{1,3})([^*_ ]+?)\\1(?![*_]))"                                    // Mid-word emphasis
             "|((?:(?<!\\*)\\*{1,3}(?!\\*)|(?<!_)_{1,3}(?!_))(?=.)(?! )(?![.,:;] )(?![.,:;]$))" // Open
@@ -448,7 +458,7 @@ namespace markdown {
         return r;
     }
 
-    static TokenGroup RawText::_encodeProcessedItems(const string& src, ReplacementTable& replacements) {
+    TokenGroup RawText::_encodeProcessedItems(const string& src, ReplacementTable& replacements) {
         static const boost::regex cReplaced("\x01@(#?[0-9]*)@.+?\x01");
 
         TokenGroup r;
@@ -493,7 +503,7 @@ namespace markdown {
         return r;
     }
 
-    static string RawText::_restoreProcessedItems(const string &src, ReplacementTable& replacements) {
+    string RawText::_restoreProcessedItems(const string &src, ReplacementTable& replacements) {
         static const boost::regex cReplaced("\x01@(#?[0-9]*)@.+?\x01");
 
         ostringstream r;

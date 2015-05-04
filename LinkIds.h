@@ -1,8 +1,13 @@
 #ifndef LINKIDS_H
 #define LINKIDS_H
 
+#include <boost/unordered_map.hpp>
+#include <boost/optional.hpp>
+#include <boost/none.hpp>
+#include <boost/algorithm/string/case_conv.hpp>
 #include <string>
 
+using boost::none;
 using boost::optional;
 using boost::unordered_map;
 

@@ -1,4 +1,5 @@
 #include "UnorderedList.h"
+#include "ListItem.h"
 
 namespace markdown {
     UnorderedList::UnorderedList(const TokenGroup& contents, bool paragraphMode) {
