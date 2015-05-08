@@ -1,5 +1,3 @@
-// g++ main.cpp Document.cpp tokens.cpp -lboost_regex
-
 #include <iostream>
 #include <sstream>
 #include <fstream>
@@ -7,8 +5,8 @@
 #include <string>
 #include <boost/optional.hpp>
 //#include <boost/regex.hpp> // For the 'test' option
-#include "Options.h"
-#include "Document.h"
+#include "headers/Options.h"
+#include "headers/Document.h"
 
 using namespace std;
 
@@ -41,7 +39,7 @@ int main(int argc, char *argv[]) {
 		cerr << "Reading standard input..." << endl;
 	}
 
-	markdown::Document document;
+	Document document;
 	document.read(*in);
 
 	// Si le mode débug est activé
