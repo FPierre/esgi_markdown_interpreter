@@ -82,8 +82,9 @@
 
     TokenPtr Container::clone(const TokenGroup& newContents) const {
         // TODO: bug si décommenté
-        // return TokenPtr(new Container(newContents));
-        return TokenPtr();
+        // FIX: apparement bon si compilé séparément
+        return TokenPtr(new Container(newContents));
+        // return TokenPtr();
     }
 
     string Container::containerName() const {

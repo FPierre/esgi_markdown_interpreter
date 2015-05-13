@@ -5,65 +5,62 @@
 
 using namespace std;
 
+TextHolder::TextHolder(const string& text, bool canContainMarkup, unsigned int encodingFlags) : mText(text),
+                                                                                                mCanContainMarkup(canContainMarkup),
+                                                                                                mEncodingFlags(encodingFlags) {
 
-    TextHolder::TextHolder(const string& text, bool canContainMarkup, unsigned int encodingFlags) : mText(text),
-                                                                                                    mCanContainMarkup(canContainMarkup),
-                                                                                                    mEncodingFlags(encodingFlags) {
+}
 
-    }
+string TextHolder::encodeString(const string& src, int encodingFlags) const {
+    bool amps     = (encodingFlags & cAmps)       != 0,
+    doubleAmps    = (encodingFlags & cDoubleAmps) != 0,
+    angleBrackets = (encodingFlags & cAngles)     != 0,
+    quotes        = (encodingFlags & cQuotes)     != 0;
 
-    string TextHolder::encodeString(const string& src, int encodingFlags) {
-        bool amps      = (encodingFlags & cAmps)       != 0,
-        doubleAmps     = (encodingFlags & cDoubleAmps) != 0,
-        angleBrackets  = (encodingFlags & cAngles)     != 0,
-        quotes         = (encodingFlags & cQuotes)     != 0;
+    string tgt;
 
-        string tgt;
+    for (string::const_iterator i = src.begin(), ie = src.end(); i != ie; ++i) {
+        if (*i == '&' && amps) {
+            static const boost::regex cIgnore("^(&amp;)|(&#[0-9]{1,3};)|(&#[xX][0-9a-fA-F]{1,2};)");
 
-        for (string::const_iterator i = src.begin(), ie = src.end(); i != ie; ++i) {
-            if (*i == '&' && amps) {
-                static const boost::regex cIgnore("^(&amp;)|(&#[0-9]{1,3};)|(&#[xX][0-9a-fA-F]{1,2};)");
-
-                if (boost::regex_search(i, ie, cIgnore)) {
-                    tgt.push_back(*i);
-                }
-                else {
-                    tgt += "&amp;";
-                }
+            if (boost::regex_search(i, ie, cIgnore)) {
+                tgt.push_back(*i);
             }
-            else if (*i == '&'  && doubleAmps)    tgt += "&amp;";
-            else if (*i == '<'  && angleBrackets) tgt += "&lt;";
-            else if (*i == '>'  && angleBrackets) tgt += "&gt;";
-            else if (*i == '\"' && quotes)        tgt += "&quot;";
-            else tgt.push_back(*i);
+            else {
+                tgt += "&amp;";
+            }
         }
-
-        return tgt;
+        else if (*i == '&'  && doubleAmps)    tgt += "&amp;";
+        else if (*i == '<'  && angleBrackets) tgt += "&lt;";
+        else if (*i == '>'  && angleBrackets) tgt += "&gt;";
+        else if (*i == '\"' && quotes)        tgt += "&quot;";
+        else tgt.push_back(*i);
     }
 
-    void TextHolder::interprete_to_html(ostream& out) const {
-        preWrite(out);
+    return tgt;
+}
 
-        if (mEncodingFlags != 0) {
-            // TODO: erreur si décommente cette ligne...
-            // out << encodeString(mText, mEncodingFlags);
-        }
-        else {
-            out << mText;
-        }
+void TextHolder::interprete_to_html(ostream& out) const {
+    preWrite(out);
 
-        postWrite(out);
+    if (mEncodingFlags != 0) {
+        out << encodeString(mText, mEncodingFlags);
+    }
+    else {
+        out << mText;
     }
 
-    void TextHolder::writeToken(ostream& out) const {
-        out << "TextHolder: " << mText << '\n';
-    }
+    postWrite(out);
+}
 
-    optional<const string&> TextHolder::text() const {
-        return mText;
-    }
+void TextHolder::writeToken(ostream& out) const {
+    out << "TextHolder: " << mText << '\n';
+}
 
-    bool TextHolder::canContainMarkup() const {
-        return mCanContainMarkup;
-    }
+optional<const string&> TextHolder::text() const {
+    return mText;
+}
 
+bool TextHolder::canContainMarkup() const {
+    return mCanContainMarkup;
+}
