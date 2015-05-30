@@ -13,11 +13,9 @@ using namespace std;
 int main(int argc, char *argv[]) {
 	Options cfg;
 
-	if (!cfg.readOptions(argc, argv)) return 1;
-
-//	if (cfg.test()) {
-//		return 1;
-//	}
+	if (!cfg.readOptions(argc, argv)) {
+		return 1;
+	}
 
 	ifstream ifile;
 
