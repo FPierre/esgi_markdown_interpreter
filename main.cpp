@@ -4,7 +4,6 @@
 #include <vector>
 #include <string>
 #include <boost/optional.hpp>
-//#include <boost/regex.hpp> // For the 'test' option
 #include "headers/Options.h"
 #include "headers/Document.h"
 
@@ -13,7 +12,7 @@ using namespace std;
 int main(int argc, char *argv[]) {
 	Options cfg;
 
-	if (!cfg.readOptions(argc, argv)) {
+	if (!cfg.read_options(argc, argv)) {
 		return 1;
 	}
 
