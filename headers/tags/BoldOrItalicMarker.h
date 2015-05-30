@@ -1,39 +1,38 @@
-// #ifndef BOLDORITALICMARKER_h
-// #define BOLDORITALICMARKER_h
+#ifndef BOLDORITALICMARKER_H
+#define BOLDORITALICMARKER_H
 
-// #include "../Token.h"
+#include "../Token.h"
 
-// namespace markdown {
-//     class BoldOrItalicMarker : public Token {
-//         public:
-//         BoldOrItalicMarker(bool open, char c, size_t size);
-//         virtual bool isUnmatchedOpenMarker() const;
-//         virtual bool isUnmatchedCloseMarker() const;
-//         virtual bool isMatchedOpenMarker() const;
-//         virtual bool isMatchedCloseMarker() const;
-//         virtual void interprete_to_html(ostream& out) const;
-//         virtual void writeToken(ostream& out) const;
+class BoldOrItalicMarker : public Token {
+    public:
+    BoldOrItalicMarker(bool open, char c, size_t size);
 
-//         bool isOpenMarker() const;
-//         char tokenCharacter() const;
-//         size_t size() const;
-//         bool matched() const;
-//         BoldOrItalicMarker* matchedTo() const;
-//         int id() const;
+    virtual bool isUnmatchedOpenMarker() const;
+    virtual bool isUnmatchedCloseMarker() const;
+    virtual bool isMatchedOpenMarker() const;
+    virtual bool isMatchedCloseMarker() const;
+    virtual void interprete_to_html(ostream& out) const;
+    virtual void writeToken(ostream& out) const;
 
-//         void matched(BoldOrItalicMarker *match, int id=-1);
-//         void cannotMatch(bool set);
-//         void disable();
+    bool isOpenMarker() const;
+    char tokenCharacter() const;
+    size_t size() const;
+    bool matched() const;
+    BoldOrItalicMarker* matchedTo() const;
+    int id() const;
 
-//         private:
-//         bool mOpenMarker; // Otherwise it's a close-marker
-//         char mTokenCharacter; // Underscore or asterisk
-//         size_t mSize; // 1=italics, 2=bold, 3=both
-//         BoldOrItalicMarker* mMatch;
-//         bool mCannotMatch;
-//         bool mDisabled;
-//         int mId;
-//     };
-// }
+    void matched(BoldOrItalicMarker *match, int id=-1);
+    void cannotMatch(bool set);
+    void disable();
 
-// #endif
+    private:
+    bool mOpenMarker;     // Otherwise it's a close-marker
+    char mTokenCharacter; // Underscore or asterisk
+    size_t mSize;         // 1=italics, 2=bold, 3=both
+    BoldOrItalicMarker* mMatch;
+    bool mCannotMatch;
+    bool mDisabled;
+    int mId;
+};
+
+#endif

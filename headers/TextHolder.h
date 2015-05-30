@@ -16,7 +16,9 @@ class TextHolder : public Token {
 
     public:
     TextHolder(const string& text, bool canContainMarkup, unsigned int encodingFlags);
+
     string encodeString(const string& src, int encodingFlags) const;
+
     virtual void interprete_to_html(ostream& out) const;
     virtual void writeToken(ostream& out) const;
     virtual optional<const string&> text() const;

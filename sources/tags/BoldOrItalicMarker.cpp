@@ -1,106 +1,105 @@
-// #include "BoldOrItalicMarker.h"
+#include "BoldOrItalicMarker.h"
 
-// namespace markdown {
-//     BoldOrItalicMarker::BoldOrItalicMarker(bool open, char c, size_t size) : mOpenMarker(open),
-//                                                                              mTokenCharacter(c),
-//                                                                              mSize(size),
-//                                                                              mMatch(0),
-//                                                                              mCannotMatch(false),
-//                                                                              mDisabled(false),
-//                                                                              mId(-1) {
 
-//     }
+BoldOrItalicMarker::BoldOrItalicMarker(bool open, char c, size_t size) : mOpenMarker(open),
+                                                                         mTokenCharacter(c),
+                                                                         mSize(size),
+                                                                         mMatch(0),
+                                                                         mCannotMatch(false),
+                                                                         mDisabled(false),
+                                                                         mId(-1) {
 
-//     bool BoldOrItalicMarker::isUnmatchedOpenMarker() const {
-//         return (mOpenMarker && mMatch==0 && !mCannotMatch);
-//     }
+}
 
-//     bool BoldOrItalicMarker::isUnmatchedCloseMarker() const {
-//         return (!mOpenMarker && mMatch==0 && !mCannotMatch);
-//     }
+bool BoldOrItalicMarker::isUnmatchedOpenMarker() const {
+    return (mOpenMarker && mMatch == 0 && !mCannotMatch);
+}
 
-//     bool BoldOrItalicMarker::isMatchedOpenMarker() const {
-//         return (mOpenMarker && mMatch!=0);
-//     }
+bool BoldOrItalicMarker::isUnmatchedCloseMarker() const {
+    return (!mOpenMarker && mMatch == 0 && !mCannotMatch);
+}
 
-//     bool BoldOrItalicMarker::isMatchedCloseMarker() const {
-//         return (!mOpenMarker && mMatch!=0);
-//     }
+bool BoldOrItalicMarker::isMatchedOpenMarker() const {
+    return (mOpenMarker && mMatch != 0);
+}
 
-//     bool BoldOrItalicMarker::isOpenMarker() const {
-//         return mOpenMarker;
-//     }
+bool BoldOrItalicMarker::isMatchedCloseMarker() const {
+    return (!mOpenMarker && mMatch != 0);
+}
 
-//     char BoldOrItalicMarker::tokenCharacter() const {
-//         return mTokenCharacter;
-//     }
+bool BoldOrItalicMarker::isOpenMarker() const {
+    return mOpenMarker;
+}
 
-//     size_t BoldOrItalicMarker::size() const {
-//         return mSize;
-//     }
+char BoldOrItalicMarker::tokenCharacter() const {
+    return mTokenCharacter;
+}
 
-//     bool BoldOrItalicMarker::matched() const {
-//         return (mMatch!=0);
-//     }
+size_t BoldOrItalicMarker::size() const {
+    return mSize;
+}
 
-//     BoldOrItalicMarker* BoldOrItalicMarker::matchedTo() const {
-//         return mMatch;
-//     }
+bool BoldOrItalicMarker::matched() const {
+    return (mMatch != 0);
+}
 
-//     int BoldOrItalicMarker::id() const {
-//         return mId;
-//     }
+BoldOrItalicMarker* BoldOrItalicMarker::matchedTo() const {
+    return mMatch;
+}
 
-//     void BoldOrItalicMarker::matched(BoldOrItalicMarker *match, int id=-1) {
-//         mMatch=match; mId=id;
-//     }
+int BoldOrItalicMarker::id() const {
+    return mId;
+}
 
-//     void BoldOrItalicMarker::cannotMatch(bool set) {
-//         mCannotMatch=set;
-//     }
+void BoldOrItalicMarker::matched(BoldOrItalicMarker *match, int id = -1) {
+    mMatch = match; mId = id;
+}
 
-//     void BoldOrItalicMarker::disable() {
-//         mCannotMatch=mDisabled=true;
-//     }
+void BoldOrItalicMarker::cannotMatch(bool set) {
+    mCannotMatch = set;
+}
 
-//     void BoldOrItalicMarker::interprete_to_html(ostream& out) const {
-//         if (!mDisabled) {
-//             if (mMatch != 0) {
-//                 assert(mSize >= 1 && mSize <= 3);
+void BoldOrItalicMarker::disable() {
+    mCannotMatch = mDisabled = true;
+}
 
-//                 if (mOpenMarker) {
-//                     out << (mSize == 1 ? "<em>" : mSize == 2 ? "<strong>" : "<strong><em>");
+void BoldOrItalicMarker::interprete_to_html(ostream& out) const {
+    if (!mDisabled) {
+        if (mMatch != 0) {
+            assert(mSize >= 1 && mSize <= 3);
 
-//                 else {
-//                     out << (mSize == 1 ? "</em>" : mSize == 2 ? "</strong>" : "</em></strong>");
-//                 }
-//             }
-//             else {
-//                 out << string(mSize, mTokenCharacter);
-//             }
-//         }
-//     }
+            if (mOpenMarker) {
+                out << (mSize == 1 ? "<em>" : mSize == 2 ? "<strong>" : "<strong><em>");
 
-//     void BoldOrItalicMarker::writeToken(ostream& out) const {
-//         if (!mDisabled) {
-//             if (mMatch != 0) {
-//                 string type = (mSize == 1 ? "italic" : mSize == 2 ? "bold" : "italic&bold");
+            else {
+                out << (mSize == 1 ? "</em>" : mSize == 2 ? "</strong>" : "</em></strong>");
+            }
+        }
+        else {
+            out << string(mSize, mTokenCharacter);
+        }
+    }
+}
 
-//                 if (mOpenMarker) {
-//                     out << "Matched open-" << type << " marker" << endl;
-//                 }
-//                 else {
-//                     out << "Matched close-" << type << " marker" << endl;
-//                 }
-//             }
-//             else {
-//                 if (mOpenMarker) {
-//                     out << "Unmatched bold/italic open marker: " << string(mSize, mTokenCharacter) << endl;
-//                 }
-//                 else {
-//                     out << "Unmatched bold/italic close marker: " << string(mSize, mTokenCharacter) << endl;
-//                 }
-//             }
-//         }
-//     }
-// }
+void BoldOrItalicMarker::writeToken(ostream& out) const {
+    if (!mDisabled) {
+        if (mMatch != 0) {
+            string type = (mSize == 1 ? "italic" : mSize == 2 ? "bold" : "italic&bold");
+
+            if (mOpenMarker) {
+                out << "Matched open-" << type << " marker" << endl;
+            }
+            else {
+                out << "Matched close-" << type << " marker" << endl;
+            }
+        }
+        else {
+            if (mOpenMarker) {
+                out << "Unmatched bold/italic open marker: " << string(mSize, mTokenCharacter) << endl;
+            }
+            else {
+                out << "Unmatched bold/italic close marker: " << string(mSize, mTokenCharacter) << endl;
+            }
+        }
+    }
+}

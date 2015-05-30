@@ -3,12 +3,11 @@
 
 #include "../TextHolder.h"
 
+class InlineHtmlComment : public TextHolder {
+    public:
+    InlineHtmlComment(const string& contents);
 
-    class InlineHtmlComment : public TextHolder {
-        public:
-        InlineHtmlComment(const string& contents);
-        virtual void writeToken(ostream& out) const;
-    };
-
+    virtual void writeToken(ostream& out) const;
+};
 
 #endif

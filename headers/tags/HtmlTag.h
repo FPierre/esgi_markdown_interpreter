@@ -3,16 +3,15 @@
 
 #include "../TextHolder.h"
 
+class HtmlTag : public TextHolder {
+    public:
+    HtmlTag(const string& contents);
 
-    class HtmlTag : public TextHolder {
-        public:
-        HtmlTag(const string& contents);
-        virtual void writeToken(ostream& out) const;
+    virtual void writeToken(ostream& out) const;
 
-        protected:
-        virtual void preWrite(ostream& out) const;
-        virtual void postWrite(ostream& out) const;
-    };
-
+    protected:
+    virtual void preWrite(ostream& out) const;
+    virtual void postWrite(ostream& out) const;
+};
 
 #endif

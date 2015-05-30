@@ -8,25 +8,26 @@
 
 using namespace std;
 
+size_t isValidTag(const string& tag, bool nonBlockFirst = false);
 
-    size_t isValidTag(const string& tag, bool nonBlockFirst = false);
+class RawText : public TextHolder {
+    public:
+    RawText(const string& text, bool canContainMarkup = true);
 
-    class RawText : public TextHolder {
-        public:
-        RawText(const string& text, bool canContainMarkup = true);
-        virtual void writeToken(ostream& out) const;
-        virtual optional<TokenGroup> processSpanElements(const LinkIds& idTable);
+    virtual void writeToken(ostream& out) const;
+    virtual optional<TokenGroup> processSpanElements(const LinkIds& idTable);
 
-        private:
-        typedef vector<TokenPtr> ReplacementTable;
-        static string _processHtmlTagAttributes(string src, ReplacementTable& replacements);
-        static string _processCodeSpans(string src, ReplacementTable& replacements);
-        static string _processEscapedCharacters(const string& src);
-        // static string _processLinksImagesAndTags(const string& src, ReplacementTable& replacements, const LinkIds& idTable);
-        static string _processSpaceBracketedGroupings(const string& src, ReplacementTable& replacements);
-        static TokenGroup _processBoldAndItalicSpans(const string& src, ReplacementTable& replacements);
-        static TokenGroup _encodeProcessedItems(const string& src, ReplacementTable& replacements);
-        static string _restoreProcessedItems(const string &src, ReplacementTable& replacements);
-    };
+    private:
+    typedef vector<TokenPtr> ReplacementTable;
+
+    static string _processHtmlTagAttributes(string src, ReplacementTable& replacements);
+    static string _processCodeSpans(string src, ReplacementTable& replacements);
+    static string _processEscapedCharacters(const string& src);
+    // static string _processLinksImagesAndTags(const string& src, ReplacementTable& replacements, const LinkIds& idTable);
+    static string _processSpaceBracketedGroupings(const string& src, ReplacementTable& replacements);
+    static TokenGroup _processBoldAndItalicSpans(const string& src, ReplacementTable& replacements);
+    static TokenGroup _encodeProcessedItems(const string& src, ReplacementTable& replacements);
+    static string _restoreProcessedItems(const string &src, ReplacementTable& replacements);
+};
 
 #endif

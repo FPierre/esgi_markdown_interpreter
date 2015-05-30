@@ -6,6 +6,7 @@
 class InlineHtmlContents : public TextHolder {
     public:
     InlineHtmlContents(const string& contents);
+
     virtual void writeToken(ostream& out) const;
 };
 

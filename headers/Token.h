@@ -15,6 +15,7 @@ typedef TokenGroup::const_iterator CTokenGroupIter;
 class Token {
     public:
     Token();
+
     virtual void interprete_to_html(ostream&) const = 0;
     virtual void writeAsOriginal(ostream& out) const;
     virtual void writeToken(ostream& out) const = 0;

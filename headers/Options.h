@@ -13,6 +13,7 @@ class Options {
 
     public:
     Options();
+
     bool readOptions(int argc, char *argv[]);
     void showHelp();
     bool debug() const;

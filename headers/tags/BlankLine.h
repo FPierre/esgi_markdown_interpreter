@@ -3,13 +3,12 @@
 
 #include "../TextHolder.h"
 
+class BlankLine : public TextHolder {
+    public:
+    BlankLine(const string& actualContents = string());
 
-    class BlankLine : public TextHolder {
-        public:
-        BlankLine(const string& actualContents = string());
-        virtual void writeToken(ostream& out) const;
-        virtual bool isBlankLine() const;
-    };
-
+    virtual void writeToken(ostream& out) const;
+    virtual bool isBlankLine() const;
+};
 
 #endif
