@@ -28,7 +28,7 @@ using namespace std;
         return false;
     }
 
-    bool Token::isBlankLine() const {
+    bool Token::is_blanck_line() const {
         return false;
     }
 

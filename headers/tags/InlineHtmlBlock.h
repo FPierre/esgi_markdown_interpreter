@@ -15,7 +15,7 @@ class InlineHtmlBlock : public Container {
     virtual TokenPtr clone(const TokenGroup& newContents) const;
     virtual string containerName() const;
     // Inline HTML blocks always end with a blank line, so report it as one for parsing purposes
-    virtual bool isBlankLine() const;
+    virtual bool is_blanck_line() const;
 
     private:
     bool mIsBlockTag;

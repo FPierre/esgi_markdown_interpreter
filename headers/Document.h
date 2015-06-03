@@ -18,6 +18,7 @@ class Token;
 class LinkIds;
 
 // shared_ptr : http://openclassrooms.com/courses/c-gerer-correctement-ses-allocations-dynamiques
+// et : http://openclassrooms.com/courses/c-gerer-correctement-ses-allocations-dynamiques/deuxieme-exemple-boost-shared-ptr
 typedef boost::shared_ptr<Token> TokenPtr;
 typedef list<TokenPtr> TokenGroup;
 
@@ -27,12 +28,10 @@ class Document {
     Document(istream& in, size_t spacesPerTab = cDefaultSpacesPerTab);
     ~Document();
 
-    // You can call read() functions multiple times before writing if desirable.
-    // Once the document has been processed for writing, it can't accept any more input.
     bool read(const string&);
     bool read(istream&);
-    void write(ostream&);       // Mode normal
-    void writeTokens(ostream&); // Pour débugger
+    void write(ostream&);
+    void write_tokens(ostream&);
 
     private:
     static const size_t cSpacesPerInitialTab, cDefaultSpacesPerTab;
@@ -42,11 +41,11 @@ class Document {
     bool mProcessed;
 
     bool getline(istream& in, string& line);
-    void process();                                        // Méthode de réunification des sous-méthodes suivantes
-    void mergeMultilineHtmlTags();                         //
-    void processInlineHtmlAndReferences();                 //
-    void processBlocksItems(TokenPtr inTokenContainer);    //
-    void processParagraphLines(TokenPtr inTokenContainer); //
+    void process();
+    void mergeMultilineHtmlTags();
+    void processInlineHtmlAndReferences();
+    void processBlocksItems(TokenPtr inTokenContainer);
+    void processParagraphLines(TokenPtr inTokenContainer);
 };
 
 #endif

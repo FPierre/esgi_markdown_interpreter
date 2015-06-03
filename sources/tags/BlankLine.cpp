@@ -9,7 +9,7 @@
         out << "BlankLine: " << *text() << '\n';
     }
 
-    bool BlankLine::isBlankLine() const {
+    bool BlankLine::is_blanck_line() const {
         return true;
     }
 

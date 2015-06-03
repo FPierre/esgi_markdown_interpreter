@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
 
 	// Si le mode débug est activé
 	if (cfg.debug()) {
-		document.writeTokens(cout);
+		document.write_tokens(cout);
 	}
 	// Sinon mode normal
     else {

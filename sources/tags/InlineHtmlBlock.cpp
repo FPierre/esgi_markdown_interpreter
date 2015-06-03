@@ -26,7 +26,7 @@ using namespace std;
     }
 
     // Inline HTML ocks always end with a blank line, so report it as one for parsing purposes
-    bool InlineHtmlBlock::isBlankLine() const {
+    bool InlineHtmlBlock::is_blanck_line() const {
         return true;
     }
 
