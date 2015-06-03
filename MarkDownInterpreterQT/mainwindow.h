@@ -18,19 +18,28 @@ public:
     ~MainWindow();
     QString FileName;
     QString DestDir;
+    QString ThemeCSS;
     bool debugMode;
     bool openFile;
+    bool openWeb;
 
 private slots:
- void on_m_sourceFileButton_clicked();
-
- void on_DestinationFile_clicked();
 
  void on_Debug_stateChanged(int arg1);
 
  void on_OpenFileAfterConvert_stateChanged(int arg1);
 
  void on_Convert_clicked();
+
+ void on_SourceFileBtn_clicked();
+
+ void on_DestFolderBtn_clicked();
+
+ void on_DesFolderGroup_clicked();
+
+ void on_OpenWebCheck_stateChanged(int arg1);
+
+ void on_ThemeCombo_currentIndexChanged(const QString &arg1);
 
 private:
     Ui::MainWindow *ui;
