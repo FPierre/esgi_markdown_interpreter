@@ -9,7 +9,7 @@ class Paragraph : public Container {
     Paragraph(const TokenGroup& contents);
 
     virtual TokenPtr clone(const TokenGroup& newContents) const;
-    virtual string containerName() const;
+    virtual string container_name() const;
 
     protected:
     virtual void pre_write(ostream& out) const;

@@ -17,7 +17,7 @@ TokenPtr ListItem::clone(const TokenGroup& newContents) const {
     return TokenPtr(new ListItem(newContents));
 }
 
-string ListItem::containerName() const {
+string ListItem::container_name() const {
     return "ListItem";
 }
 

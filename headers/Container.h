@@ -17,7 +17,7 @@ class Container : public Token {
     virtual void write_token(size_t indent, ostream& out) const;
     virtual optional<TokenGroup> processSpanElements(const LinkIds& idTable);
     virtual TokenPtr clone(const TokenGroup& newContents) const;
-    virtual string containerName() const;
+    virtual string container_name() const;
 
     protected:
     TokenGroup mSubTokens;

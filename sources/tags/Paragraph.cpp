@@ -12,7 +12,7 @@ TokenPtr Paragraph::clone(const TokenGroup& newContents) const {
     return TokenPtr(new Paragraph(newContents));
 }
 
-string Paragraph::containerName() const {
+string Paragraph::container_name() const {
     return "Paragraph";
 }
 

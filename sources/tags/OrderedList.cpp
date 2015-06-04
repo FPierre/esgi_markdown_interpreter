@@ -9,7 +9,7 @@
 //         return TokenPtr(new OrderedList(newContents));
 //     }
 
-//     string OrderedList::containerName() const {
+//     string OrderedList::container_name() const {
 //         return "OrderedList";
 //     }
 

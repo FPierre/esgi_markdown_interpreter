@@ -36,7 +36,7 @@ void Container::write_token(ostream& out) const {
 }
 
 void Container::write_token(size_t indent, ostream& out) const {
-    out << string(indent * 2, ' ') << containerName() << endl;
+    out << string(indent * 2, ' ') << container_name() << endl;
 
     for (CTokenGroupIter ii=mSubTokens.begin(), iie=mSubTokens.end(); ii!=iie; ++ii) {
         (*ii)->write_token(indent + 1, out);
@@ -87,6 +87,6 @@ TokenPtr Container::clone(const TokenGroup& newContents) const {
     return TokenPtr(new Container(newContents));
 }
 
-string Container::containerName() const {
+string Container::container_name() const {
     return "Container";
 }

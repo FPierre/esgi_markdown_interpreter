@@ -8,7 +8,7 @@
 //         public:
 //         OrderedList(const TokenGroup& contents, bool paragraphMode = false);
 //         virtual TokenPtr clone(const TokenGroup& newContents) const;
-//         virtual string containerName() const;
+//         virtual string container_name() const;
 
 //         protected:
 //         virtual void pre_write(ostream& out) const;

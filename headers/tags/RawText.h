@@ -23,7 +23,7 @@ class RawText : public TextHolder {
     static string _processHtmlTagAttributes(string src, ReplacementTable& replacements);
     static string _processCodeSpans(string src, ReplacementTable& replacements);
     static string _processEscapedCharacters(const string& src);
-    // static string _processLinksImagesAndTags(const string& src, ReplacementTable& replacements, const LinkIds& idTable);
+    static string _processLinksImagesAndTags(const string& src, ReplacementTable& replacements, const LinkIds& idTable);
     static string _processSpaceBracketedGroupings(const string& src, ReplacementTable& replacements);
     static TokenGroup _processBoldAndItalicSpans(const string& src, ReplacementTable& replacements);
     static TokenGroup _encodeProcessedItems(const string& src, ReplacementTable& replacements);

@@ -8,7 +8,7 @@ TokenPtr BlockQuote::clone(const TokenGroup& newContents) const {
     return TokenPtr(new BlockQuote(newContents));
 }
 
-string BlockQuote::containerName() const {
+string BlockQuote::container_name() const {
     return "BlockQuote";
 }
 

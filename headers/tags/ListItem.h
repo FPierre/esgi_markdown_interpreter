@@ -10,7 +10,7 @@ class ListItem : public Container {
     void inhibitParagraphs(bool set);
     virtual bool inhibitParagraphs() const;
     virtual TokenPtr clone(const TokenGroup& newContents) const;
-    virtual string containerName() const;
+    virtual string container_name() const;
 
     protected:
     virtual void pre_write(ostream& out) const;

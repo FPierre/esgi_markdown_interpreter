@@ -20,7 +20,7 @@ TokenPtr InlineHtmlBlock::clone(const TokenGroup& newContents) const {
     return TokenPtr(new InlineHtmlBlock(newContents));
 }
 
-string InlineHtmlBlock::containerName() const {
+string InlineHtmlBlock::container_name() const {
     return "InlineHtmlBlock";
 }
 
