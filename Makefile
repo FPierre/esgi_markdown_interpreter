@@ -4,7 +4,7 @@
 # http://www.haverford.edu/cmsc/course-pages/usingMake.html
 
 CC = g++
-CFLAGS = -lboost_regex -std=c++11
+CFLAGS = -Wall -Wextra -pedantic -lboost_regex -std=c++11
 EXEC_NAME = interpreter
 OBJ_FILES = BlankLine.o BlockQuote.o CodeBlock.o CodeSpan.o EscapedCharacter.o Header.o HtmlAnchorTag.o HtmlTag.o InlineHtmlBlock.o InlineHtmlComment.o InlineHtmlContents.o ListItem.o Paragraph.o RawText.o Container.o Document.o LinkIds.o Options.o TextHolder.o Token.o main.o
 
