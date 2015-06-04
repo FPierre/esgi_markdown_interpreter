@@ -7,8 +7,8 @@
 #include "../../headers/tags/HtmlAnchorTag.h"
 #include "../../headers/tags/EscapedCharacter.h"
 #include "../../headers/tags/HtmlTag.h"
+#include "../../headers/tags/BoldOrItalicMarker.h"
 // #include "Image.h"
-// #include "BoldOrItalicMarker.h"
 
 using namespace std;
 
@@ -521,20 +521,20 @@ const char *cBlockTagInit[] = {
 
                 if (m[3].matched) {
                     string token=m[3];
-                    // tgt.push_back(TokenPtr(new BoldOrItalicMarker(true, token[0], token.length())));
+                    tgt.push_back(TokenPtr(new BoldOrItalicMarker(true, token[0], token.length())));
                     prev=m[0].second;
                 }
                 else if (m[4].matched) {
                     string token=m[4];
-                    // tgt.push_back(TokenPtr(new BoldOrItalicMarker(false, token[0], token.length())));
+                    tgt.push_back(TokenPtr(new BoldOrItalicMarker(false, token[0], token.length())));
 
                     prev = m[0].second;
                 }
                 else {
                     string token=m[1], contents=m[2];
-                    // tgt.push_back(TokenPtr(new BoldOrItalicMarker(true, token[0], token.length())));
+                    tgt.push_back(TokenPtr(new BoldOrItalicMarker(true, token[0], token.length())));
                     tgt.push_back(TokenPtr(new RawText(string(contents))));
-                    // tgt.push_back(TokenPtr(new BoldOrItalicMarker(false, token[0], token.length())));
+                    tgt.push_back(TokenPtr(new BoldOrItalicMarker(false, token[0], token.length())));
 
                     prev = m[0].second;
                 }
@@ -549,80 +549,80 @@ const char *cBlockTagInit[] = {
 
         for (TokenGroup::iterator ii=tgt.begin(), iie=tgt.end(); ii!=iie; ++ii) {
             if ((*ii)->isUnmatchedOpenMarker()) {
-                // BoldOrItalicMarker *openToken=dynamic_cast<BoldOrItalicMarker *>(ii->get());
+                BoldOrItalicMarker *openToken=dynamic_cast<BoldOrItalicMarker *>(ii->get());
 
                 // Find a matching close-marker, if it's there
                 TokenGroup::iterator iii=ii;
 
-                // for (++iii; iii!=iie; ++iii) {
-                //     if ((*iii)->isUnmatchedCloseMarker()) {
-                //         BoldOrItalicMarker *closeToken=dynamic_cast<BoldOrItalicMarker*>(iii->get());
-                //         if (closeToken->size()==3 && openToken->size()!=3) {
-                //             // Split the close-token into a match for the open-token
-                //             // and a second for the leftovers.
-                //             closeToken->disable();
-                //             TokenGroup g;
-                //             g.push_back(TokenPtr(new BoldOrItalicMarker(false,
-                //                 closeToken->tokenCharacter(), closeToken->size()-
-                //                 openToken->size())));
-                //             g.push_back(TokenPtr(new BoldOrItalicMarker(false,
-                //                 closeToken->tokenCharacter(), openToken->size())));
-                //             TokenGroup::iterator after=iii;
-                //             ++after;
-                //             tgt.splice(after, g);
-                //             continue;
-                //         }
+                for (++iii; iii!=iie; ++iii) {
+                    if ((*iii)->isUnmatchedCloseMarker()) {
+                        BoldOrItalicMarker *closeToken=dynamic_cast<BoldOrItalicMarker*>(iii->get());
+                        if (closeToken->size()==3 && openToken->size()!=3) {
+                            // Split the close-token into a match for the open-token
+                            // and a second for the leftovers.
+                            closeToken->disable();
+                            TokenGroup g;
+                            g.push_back(TokenPtr(new BoldOrItalicMarker(false,
+                                closeToken->tokenCharacter(), closeToken->size()-
+                                openToken->size())));
+                            g.push_back(TokenPtr(new BoldOrItalicMarker(false,
+                                closeToken->tokenCharacter(), openToken->size())));
+                            TokenGroup::iterator after=iii;
+                            ++after;
+                            tgt.splice(after, g);
+                            continue;
+                        }
 
-                //         if (closeToken->tokenCharacter()==openToken->tokenCharacter() && closeToken->size()==openToken->size()) {
-                //             openToken->matched(closeToken, id);
-                //             closeToken->matched(openToken, id);
+                        if (closeToken->tokenCharacter()==openToken->tokenCharacter() && closeToken->size()==openToken->size()) {
+                            openToken->matched(closeToken, id);
+                            closeToken->matched(openToken, id);
 
-                //             ++id;
-                //             break;
-                //         }
-                //         else if (openToken->size() == 3) {
-                //             // Split the open-token into a match for the close-token
-                //             // and a second for the leftovers.
-                //             openToken->disable();
-                //             TokenGroup g;
-                //             g.push_back(TokenPtr(new BoldOrItalicMarker(true,
-                //                 openToken->tokenCharacter(), openToken->size()-
-                //                 closeToken->size())));
-                //             g.push_back(TokenPtr(new BoldOrItalicMarker(true, openToken->tokenCharacter(), closeToken->size())));
-                //             TokenGroup::iterator after = ii;
-                //             ++after;
-                //             tgt.splice(after, g);
-                //             break;
-                //         }
-                //     }
-                // }
+                            ++id;
+                            break;
+                        }
+                        else if (openToken->size() == 3) {
+                            // Split the open-token into a match for the close-token
+                            // and a second for the leftovers.
+                            openToken->disable();
+                            TokenGroup g;
+                            g.push_back(TokenPtr(new BoldOrItalicMarker(true,
+                                openToken->tokenCharacter(), openToken->size()-
+                                closeToken->size())));
+                            g.push_back(TokenPtr(new BoldOrItalicMarker(true, openToken->tokenCharacter(), closeToken->size())));
+                            TokenGroup::iterator after = ii;
+                            ++after;
+                            tgt.splice(after, g);
+                            break;
+                        }
+                    }
+                }
             }
         }
 
         // "Unmatch" invalidly-nested matches.
-        // stack<BoldOrItalicMarker*> openMatches;
+        stack<BoldOrItalicMarker*> openMatches;
 
-        // for (TokenGroup::iterator ii=tgt.begin(), iie=tgt.end(); ii!=iie; ++ii) {
-        //     if ((*ii)->isMatchedOpenMarker()) {
-        //         BoldOrItalicMarker *open=dynamic_cast<BoldOrItalicMarker*>(ii->get());
-        //         openMatches.push(open);
-        //     }
-        //     else if ((*ii)->isMatchedCloseMarker()) {
-        //         BoldOrItalicMarker *close=dynamic_cast<BoldOrItalicMarker*>(ii->get());
+        for (TokenGroup::iterator ii=tgt.begin(), iie=tgt.end(); ii!=iie; ++ii) {
+            if ((*ii)->isMatchedOpenMarker()) {
+                BoldOrItalicMarker *open=dynamic_cast<BoldOrItalicMarker*>(ii->get());
+                openMatches.push(open);
+            }
+            else if ((*ii)->isMatchedCloseMarker()) {
+                BoldOrItalicMarker *close=dynamic_cast<BoldOrItalicMarker*>(ii->get());
 
-        //         if (close->id() != openMatches.top()->id()) {
-        //             close->matchedTo()->matched(0);
-        //             close->matched(0);
-        //         }
-        //         else {
-        //             openMatches.pop();
+                if (close->id() != openMatches.top()->id()) {
+                    close->matchedTo()->matched(0);
+                    close->matched(0);
+                }
+                else {
+                    openMatches.pop();
 
-        //             while (!openMatches.empty() && openMatches.top()->matchedTo()==0) {
-        //                 openMatches.pop();
-        //             }
-        //         }
-        //     }
-        // }
+                    while (!openMatches.empty() && openMatches.top()->matchedTo()==0) {
+                        openMatches.pop();
+                    }
+                }
+            }
+        }
 
         TokenGroup r;
 

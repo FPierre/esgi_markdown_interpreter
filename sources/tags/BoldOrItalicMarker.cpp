@@ -1,5 +1,4 @@
-#include "BoldOrItalicMarker.h"
-
+#include "../../headers/tags/BoldOrItalicMarker.h"
 
 BoldOrItalicMarker::BoldOrItalicMarker(bool open, char c, size_t size) : mOpenMarker(open),
                                                                          mTokenCharacter(c),
@@ -51,7 +50,7 @@ int BoldOrItalicMarker::id() const {
     return mId;
 }
 
-void BoldOrItalicMarker::matched(BoldOrItalicMarker *match, int id = -1) {
+void BoldOrItalicMarker::matched(BoldOrItalicMarker *match, int id) {
     mMatch = match; mId = id;
 }
 
@@ -70,7 +69,7 @@ void BoldOrItalicMarker::interprete_to_html(ostream& out) const {
 
             if (mOpenMarker) {
                 out << (mSize == 1 ? "<em>" : mSize == 2 ? "<strong>" : "<strong><em>");
-
+            }
             else {
                 out << (mSize == 1 ? "</em>" : mSize == 2 ? "</strong>" : "</em></strong>");
             }
@@ -81,8 +80,7 @@ void BoldOrItalicMarker::interprete_to_html(ostream& out) const {
     }
 }
 
-void BoldOrItalicMarker::}
-write_token(ostream& out) const {
+void BoldOrItalicMarker::write_token(ostream& out) const {
     if (!mDisabled) {
         if (mMatch != 0) {
             string type = (mSize == 1 ? "italic" : mSize == 2 ? "bold" : "italic&bold");

@@ -21,14 +21,14 @@ class BoldOrItalicMarker : public Token {
     BoldOrItalicMarker* matchedTo() const;
     int id() const;
 
-    void matched(BoldOrItalicMarker *match, int id=-1);
+    void matched(BoldOrItalicMarker *match, int id = -1);
     void cannotMatch(bool set);
     void disable();
 
     private:
     bool mOpenMarker;     // Otherwise it's a close-marker
     char mTokenCharacter; // Underscore or asterisk
-    size_t mSize;         // 1=italics, 2=bold, 3=both
+    size_t mSize;         // 1 = italics, 2 = bold, 3 = both
     BoldOrItalicMarker* mMatch;
     bool mCannotMatch;
     bool mDisabled;
