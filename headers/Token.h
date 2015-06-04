@@ -23,10 +23,10 @@ class Token {
     virtual optional<TokenGroup> processSpanElements(const LinkIds& idTable);
     virtual optional<const string&> text() const;
     virtual bool canContainMarkup() const;
-    virtual bool is_blanck_line() const;
-    virtual bool isContainer() const;
-    virtual bool isUnmatchedOpenMarker() const;
-    virtual bool isUnmatchedCloseMarker() const;
+    virtual bool is_blank_line() const;
+    virtual bool is_container() const;
+    virtual bool is_unmatched_open_marker() const;
+    virtual bool is_unmatched_close_marker() const;
     virtual bool isMatchedOpenMarker() const;
     virtual bool isMatchedCloseMarker() const;
     virtual bool inhibitParagraphs() const;

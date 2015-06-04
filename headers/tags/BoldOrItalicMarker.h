@@ -7,8 +7,8 @@ class BoldOrItalicMarker : public Token {
     public:
     BoldOrItalicMarker(bool open, char c, size_t size);
 
-    virtual bool isUnmatchedOpenMarker() const;
-    virtual bool isUnmatchedCloseMarker() const;
+    virtual bool is_unmatched_open_marker() const;
+    virtual bool is_unmatched_close_marker() const;
     virtual bool isMatchedOpenMarker() const;
     virtual bool isMatchedCloseMarker() const;
     virtual void interprete_to_html(ostream& out) const;

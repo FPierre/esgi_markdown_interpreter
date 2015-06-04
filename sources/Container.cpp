@@ -17,7 +17,7 @@ void Container::swapSubtokens(TokenGroup& tokens) {
     mSubTokens.swap(tokens);
 }
 
-bool Container::isContainer() const {
+bool Container::is_container() const {
     return true;
 }
 

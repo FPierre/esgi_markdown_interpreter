@@ -6,6 +6,7 @@
 
 using namespace std;
 
+// cAmps : ?, cDoubleAmps : ?, cAngles : EOT, cQuotes : backspace (\b)
 enum EncodingFlags { cAmps = 0x01, cDoubleAmps = 0x02, cAngles = 0x04, cQuotes = 0x08 };
 
 class TextHolder : public Token {
@@ -17,7 +18,7 @@ class TextHolder : public Token {
     public:
     TextHolder(const string& text, bool canContainMarkup, unsigned int encodingFlags);
 
-    string encodeString(const string& src, int encodingFlags) const;
+    string encode_string(const string& src, int encodingFlags) const;
 
     virtual void interprete_to_html(ostream& out) const;
     virtual void write_token(ostream& out) const;

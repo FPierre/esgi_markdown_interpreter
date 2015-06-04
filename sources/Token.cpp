@@ -28,19 +28,19 @@ bool Token::canContainMarkup() const {
     return false;
 }
 
-bool Token::is_blanck_line() const {
+bool Token::is_blank_line() const {
     return false;
 }
 
-bool Token::isContainer() const {
+bool Token::is_container() const {
     return false;
 }
 
-bool Token::isUnmatchedOpenMarker() const {
+bool Token::is_unmatched_open_marker() const {
     return false;
 }
 
-bool Token::isUnmatchedCloseMarker() const {
+bool Token::is_unmatched_close_marker() const {
     return false;
 }
 

@@ -123,7 +123,7 @@ TokenGroup parseInlineHtmlText(const string& src) {
     // TODO: simplification
     // bool isHtmlCommentStart(string::const_iterator begin, string::const_iterator end) {
     //     // It can't be a single-line comment, those will already have been parsed
-    //     // by is_blanck_line.
+    //     // by is_blank_line.
     //     static const boost::regex cExpression("^<!--");
     //     return boost::regex_search(begin, end, cExpression);
     // }
@@ -136,7 +136,7 @@ TokenGroup parseInlineHtmlText(const string& src) {
 /**
  * Détermine si la string passée en paramètre est vide ou commentée
  */
-bool is_blanck_line(const string& line) {
+bool is_blank_line(const string& line) {
     static const boost::regex cExpression(" {0,3}(<--(.*)-- *> *)* *");
     return boost::regex_match(line, cExpression);
 }
@@ -183,7 +183,7 @@ optional<TokenPtr> parseInlineHtml(CTokenGroupIter& i, CTokenGroupIter end) {
                 ++i;
                 ++lines;
 
-                if (i!=end && (*i)->is_blanck_line() && (*prevLine)->text()) {
+                if (i!=end && (*i)->is_blank_line() && (*prevLine)->text()) {
                     if (prevLine==firstLine) {
                         done = true;
                     }
@@ -226,7 +226,7 @@ optional<TokenPtr> parseInlineHtml(CTokenGroupIter& i, CTokenGroupIter end) {
                 prevLine = i;
                 ++i;
 
-                if (i != end && (*i)->is_blanck_line() && (*prevLine)->text()) {
+                if (i != end && (*i)->is_blank_line() && (*prevLine)->text()) {
                     if (prevLine==firstLine) {
                         done = true;
                     }
@@ -247,7 +247,7 @@ optional<TokenPtr> parseInlineHtml(CTokenGroupIter& i, CTokenGroupIter end) {
 }
 
 optional<string> isCodeBlockLine(CTokenGroupIter& i, CTokenGroupIter end) {
-    if ((*i)->is_blanck_line()) {
+    if ((*i)->is_blank_line()) {
         // If we get here, we're already in a code block.
         ++i;
 
@@ -280,7 +280,7 @@ optional<string> isCodeBlockLine(CTokenGroupIter& i, CTokenGroupIter end) {
 }
 
 optional<TokenPtr> parseCodeBlock(CTokenGroupIter& i, CTokenGroupIter end) {
-    if (!(*i)->is_blanck_line()) {
+    if (!(*i)->is_blank_line()) {
         optional<string> contents = isCodeBlockLine(i, end);
         if (contents) {
             ostringstream out;
@@ -308,7 +308,7 @@ optional<TokenPtr> parseBlockQuote(CTokenGroupIter& i, CTokenGroupIter end) {
     static const boost::regex cBlockQuoteExpression("^((?: {0,3}>)+) (.*)$");
     // Useful captures: 1 = prefix, 2 = content
 
-    if (!(*i)->is_blanck_line() && (*i)->text() && (*i)->canContainMarkup()) {
+    if (!(*i)->is_blank_line() && (*i)->text() && (*i)->canContainMarkup()) {
         const string& line(*(*i)->text());
         boost::smatch m;
         if (boost::regex_match(line, m, cBlockQuoteExpression)) {
@@ -325,7 +325,7 @@ optional<TokenPtr> parseBlockQuote(CTokenGroupIter& i, CTokenGroupIter end) {
             // quote.
             ++i;
             while (i!=end) {
-                if ((*i)->is_blanck_line()) {
+                if ((*i)->is_blank_line()) {
                     CTokenGroupIter ii = i;
                     ++ii;
                     if (ii==end) {
@@ -345,7 +345,7 @@ optional<TokenPtr> parseBlockQuote(CTokenGroupIter& i, CTokenGroupIter end) {
                     const string& line(*(*i)->text());
                     if (boost::regex_match(line, m, continuationExpression)) {
                         assert(m[2].matched);
-                        if (!is_blanck_line(m[2])) subTokens.push_back(TokenPtr(new RawText(m[2])));
+                        if (!is_blank_line(m[2])) subTokens.push_back(TokenPtr(new RawText(m[2])));
                         else subTokens.push_back(TokenPtr(new BlankLine(m[2])));
                         ++i;
                     } else break;
@@ -365,7 +365,7 @@ optional<TokenPtr> parseListBlock(CTokenGroupIter& i, CTokenGroupIter end, bool 
 
     enum ListType { cNone, cUnordered, cOrdered };
     ListType type = cNone;
-    if (!(*i)->is_blanck_line() && (*i)->text() && (*i)->canContainMarkup()) {
+    if (!(*i)->is_blank_line() && (*i)->text() && (*i)->canContainMarkup()) {
         boost::regex nextItemExpression, startSublistExpression;
         size_t indent = 0;
 
@@ -437,7 +437,7 @@ optional<TokenPtr> parseListBlock(CTokenGroupIter& i, CTokenGroupIter end, bool 
             ++i;
 
             while (i!=end) {
-                if ((*i)->is_blanck_line()) {
+                if ((*i)->is_blank_line()) {
                     CTokenGroupIter ii = i;
                     ++ii;
                     if (ii==end) {
@@ -478,7 +478,7 @@ optional<TokenPtr> parseListBlock(CTokenGroupIter& i, CTokenGroupIter end, bool 
                             ++ii;
 
                             while (ii!=end) {
-                                if ((*ii)->is_blanck_line()) {
+                                if ((*ii)->is_blank_line()) {
                                     CTokenGroupIter iii = ii;
                                     ++iii;
                                     const string& nextLine(*(*iii)->text());
@@ -643,7 +643,7 @@ void flushParagraph(string& paragraphText, TokenGroup& paragraphTokens, TokenGro
 }
 
 optional<TokenPtr> parseHeader(CTokenGroupIter& i, CTokenGroupIter end) {
-    if (!(*i)->is_blanck_line() && (*i)->text() && (*i)->canContainMarkup()) {
+    if (!(*i)->is_blank_line() && (*i)->text() && (*i)->canContainMarkup()) {
         // Hash-mark type
         static const boost::regex cHashHeaders("^(#{1,6}) +(.*?) *#*$");
         const string& line=*(*i)->text();
@@ -655,7 +655,7 @@ optional<TokenPtr> parseHeader(CTokenGroupIter& i, CTokenGroupIter end) {
         // Underlined type
         CTokenGroupIter ii = i;
         ++ii;
-        if (ii!=end && !(*ii)->is_blanck_line() && (*ii)->text() && (*ii)->canContainMarkup()) {
+        if (ii!=end && !(*ii)->is_blank_line() && (*ii)->text() && (*ii)->canContainMarkup()) {
             static const boost::regex cUnderlinedHeaders("^([-=])\\1*$");
             const string& line=*(*ii)->text();
 
@@ -673,7 +673,7 @@ optional<TokenPtr> parseHeader(CTokenGroupIter& i, CTokenGroupIter end) {
 }
 
 optional<TokenPtr> parseHorizontalRule(CTokenGroupIter& i, CTokenGroupIter end) {
-    if (!(*i)->is_blanck_line() && (*i)->text() && (*i)->canContainMarkup()) {
+    if (!(*i)->is_blank_line() && (*i)->text() && (*i)->canContainMarkup()) {
         static const boost::regex cHorizontalRules("^ {0,3}((?:-|\\*|_) *){3,}$");
         const string& line=*(*i)->text();
 
@@ -740,7 +740,7 @@ bool Document::read(istream& in) {
     TokenGroup tgt;
 
     while (getline(in, line)) {
-        if (is_blanck_line(line)) {
+        if (is_blank_line(line)) {
             tgt.push_back(TokenPtr(new BlankLine(line)));
         } else {
             tgt.push_back(TokenPtr(new RawText(line)));
@@ -826,7 +826,7 @@ void Document::processInlineHtmlAndReferences() {
 
     for (TokenGroup::const_iterator ii = tokens->subTokens().begin(), iie = tokens->subTokens().end(); ii!=iie; ++ii) {
         if ((*ii)->text()) {
-            if (processed.empty() || processed.back()->is_blanck_line()) {
+            if (processed.empty() || processed.back()->is_blank_line()) {
                 optional<TokenPtr> inlineHtml = parseInlineHtml(ii, iie);
 
                 if (inlineHtml) {
@@ -861,7 +861,7 @@ void Document::processInlineHtmlAndReferences() {
 }
 
 void Document::processBlocksItems(TokenPtr inTokenContainer) {
-    if (!inTokenContainer->isContainer()) {
+    if (!inTokenContainer->is_container()) {
         return;
     }
 
@@ -895,7 +895,7 @@ void Document::processBlocksItems(TokenPtr inTokenContainer) {
                 processed.push_back(*ii);
             }
         }
-        else if ((*ii)->isContainer()) {
+        else if ((*ii)->is_container()) {
             processBlocksItems(*ii);
             processed.push_back(*ii);
         }
@@ -912,7 +912,7 @@ void Document::processParagraphLines(TokenPtr inTokenContainer) {
     bool noPara = tokens->inhibitParagraphs();
 
     for (TokenGroup::const_iterator ii = tokens->subTokens().begin(), iie = tokens->subTokens().end(); ii != iie; ++ii) {
-        if ((*ii)->isContainer()) {
+        if ((*ii)->is_container()) {
             processParagraphLines(*ii);
         }
     }

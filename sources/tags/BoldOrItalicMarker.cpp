@@ -10,11 +10,11 @@ BoldOrItalicMarker::BoldOrItalicMarker(bool open, char c, size_t size) : mOpenMa
 
 }
 
-bool BoldOrItalicMarker::isUnmatchedOpenMarker() const {
+bool BoldOrItalicMarker::is_unmatched_open_marker() const {
     return (mOpenMarker && mMatch == 0 && !mCannotMatch);
 }
 
-bool BoldOrItalicMarker::isUnmatchedCloseMarker() const {
+bool BoldOrItalicMarker::is_unmatched_close_marker() const {
     return (!mOpenMarker && mMatch == 0 && !mCannotMatch);
 }
 

@@ -542,14 +542,14 @@ TokenGroup RawText::_processBoldAndItalicSpans(const string& src, ReplacementTab
     int id = 0;
 
     for (TokenGroup::iterator ii=tgt.begin(), iie=tgt.end(); ii!=iie; ++ii) {
-        if ((*ii)->isUnmatchedOpenMarker()) {
+        if ((*ii)->is_unmatched_open_marker()) {
             BoldOrItalicMarker *openToken=dynamic_cast<BoldOrItalicMarker *>(ii->get());
 
             // Find a matching close-marker, if it's there
             TokenGroup::iterator iii=ii;
 
             for (++iii; iii!=iie; ++iii) {
-                if ((*iii)->isUnmatchedCloseMarker()) {
+                if ((*iii)->is_unmatched_close_marker()) {
                     BoldOrItalicMarker *closeToken=dynamic_cast<BoldOrItalicMarker*>(iii->get());
                     if (closeToken->size()==3 && openToken->size()!=3) {
                         // Split the close-token into a match for the open-token

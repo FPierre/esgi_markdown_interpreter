@@ -11,7 +11,7 @@ class Container : public Token {
     void appendSubtokens(TokenGroup& tokens);
     void swapSubtokens(TokenGroup& tokens);
 
-    virtual bool isContainer() const;
+    virtual bool is_container() const;
     virtual void interprete_to_html(ostream& out) const;
     virtual void write_token(ostream& out) const;
     virtual void write_token(size_t indent, ostream& out) const;

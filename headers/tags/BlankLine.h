@@ -8,7 +8,7 @@ class BlankLine : public TextHolder {
     BlankLine(const string& actualContents = string());
 
     virtual void write_token(ostream& out) const;
-    virtual bool is_blanck_line() const;
+    virtual bool is_blank_line() const;
 };
 
 #endif
