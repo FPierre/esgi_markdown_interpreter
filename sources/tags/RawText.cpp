@@ -12,56 +12,54 @@
 
 using namespace std;
 
+boost::unordered_set<string> otherTags, blockTags;
 
+const string cEscapedCharacters("\\`*_{}[]()#+-.!>");
 
-     boost::unordered_set<string> otherTags, blockTags;
+optional<size_t> isEscapedCharacter(char c) {
+    string::const_iterator i = find(cEscapedCharacters.begin(), cEscapedCharacters.end(), c);
 
-    const string cEscapedCharacters("\\`*_{}[]()#+-.!>");
-
-    optional<size_t> isEscapedCharacter(char c) {
-        string::const_iterator i = find(cEscapedCharacters.begin(), cEscapedCharacters.end(), c);
-
-        if (i != cEscapedCharacters.end()) {
-            return distance(cEscapedCharacters.begin(), i);
-        }
-        else {
-            return none;
-        }
+    if (i != cEscapedCharacters.end()) {
+        return distance(cEscapedCharacters.begin(), i);
     }
-
-     char escapedCharacter(size_t index) {
-        return cEscapedCharacters[index];
+    else {
+        return none;
     }
+}
 
-   void initTag(boost::unordered_set<string> &set, const char *init[]) {
-        for (size_t i = 0; init[i] != 0; i++) {
-            string str = init[i];
+char escapedCharacter(size_t index) {
+    return cEscapedCharacters[index];
+}
 
-            if (*str.rbegin() == '/') {
-                // Means it can have a closing tag
-                str = str.substr(0, str.length() - 1);
-            }
+void initTag(boost::unordered_set<string> &set, const char *init[]) {
+    for (size_t i = 0; init[i] != 0; i++) {
+        string str = init[i];
 
-            set.insert(str);
+        if (*str.rbegin() == '/') {
+            // Means it can have a closing tag
+            str = str.substr(0, str.length() - 1);
         }
+
+        set.insert(str);
     }
+}
 
-    /**
-     *
-     */
-     const char *other_tags[] = {
-        "title/", "link", "script/", "style/", "meta", "em/",
-        "strong/", "q/", "cite/", "a/", "img", "br", "span/",
-        0
-    };
+/**
+ *
+ */
+const char *other_tags[] = {
+    "title/", "link", "script/", "style/", "meta", "em/",
+    "strong/", "q/", "cite/", "a/", "img", "br", "span/",
+    0
+};
 
-     const char *cBlockTagInit[] = {
-        "p/", "blockquote/", "hr", "h1/", "h2/", "h3/", "h4/", "h5/", "h6/",
-        "dl/", "dt/", "dd/", "ol/", "ul/", "li/", "table/", "tr/", "th/",
-        "td/", "thead/", "tbody/", "tfoot/", "form/", "select/", "option",
-        "input", "label/", "textarea/", "div/", "pre/", "address/", "b/", "i/",
-        0
-    };
+const char *cBlockTagInit[] = {
+    "p/", "blockquote/", "hr", "h1/", "h2/", "h3/", "h4/", "h5/", "h6/",
+    "dl/", "dt/", "dd/", "ol/", "ul/", "li/", "table/", "tr/", "th/",
+    "td/", "thead/", "tbody/", "tfoot/", "form/", "select/", "option",
+    "input", "label/", "textarea/", "div/", "pre/", "address/", "b/", "i/",
+    0
+};
 
      bool notValidSiteCharacter(char c) {
         // NOTE: Kludge alert! The official spec for site characters is only

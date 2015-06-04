@@ -1,19 +1,17 @@
 #include "../../headers/tags/HtmlTag.h"
 
+HtmlTag::HtmlTag(const string& contents): TextHolder(contents, false, cAmps|cAngles) {
 
-    HtmlTag::HtmlTag(const string& contents): TextHolder(contents, false, cAmps|cAngles) {
+}
 
-    }
+void HtmlTag::writeToken(ostream& out) const {
+    out << "HtmlTag: " << *text() << '\n';
+}
 
-    void HtmlTag::writeToken(ostream& out) const {
-        out << "HtmlTag: " << *text() << '\n';
-    }
+void HtmlTag::preWrite(ostream& out) const {
+    out << '<';
+}
 
-    void HtmlTag::preWrite(ostream& out) const {
-        out << '<';
-    }
-
-    void HtmlTag::postWrite(ostream& out) const {
-        out << '>';
-    }
-
+void HtmlTag::postWrite(ostream& out) const {
+    out << '>';
+}
