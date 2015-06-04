@@ -41,7 +41,7 @@ string TextHolder::encodeString(const string& src, int encodingFlags) const {
 }
 
 void TextHolder::interprete_to_html(ostream& out) const {
-    preWrite(out);
+    pre_write(out);
 
     if (mEncodingFlags != 0) {
         out << encodeString(mText, mEncodingFlags);
@@ -50,7 +50,7 @@ void TextHolder::interprete_to_html(ostream& out) const {
         out << mText;
     }
 
-    postWrite(out);
+    post_write(out);
 }
 
 void TextHolder::write_token(ostream& out) const {

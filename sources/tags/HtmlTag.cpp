@@ -8,10 +8,10 @@ void HtmlTag::write_token(ostream& out) const {
     out << "HtmlTag: " << *text() << '\n';
 }
 
-void HtmlTag::preWrite(ostream& out) const {
+void HtmlTag::pre_write(ostream& out) const {
     out << '<';
 }
 
-void HtmlTag::postWrite(ostream& out) const {
+void HtmlTag::post_write(ostream& out) const {
     out << '>';
 }

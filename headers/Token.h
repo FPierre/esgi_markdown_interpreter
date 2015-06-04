@@ -32,8 +32,8 @@ class Token {
     virtual bool inhibitParagraphs() const;
 
     protected:
-    virtual void preWrite(ostream& out) const;
-    virtual void postWrite(ostream& out) const;
+    virtual void pre_write(ostream& out) const;
+    virtual void post_write(ostream& out) const;
 };
 
 #endif

@@ -16,10 +16,10 @@ string Paragraph::containerName() const {
     return "Paragraph";
 }
 
-void Paragraph::preWrite(ostream& out) const {
+void Paragraph::pre_write(ostream& out) const {
     out << "<p>";
 }
 
-void Paragraph::postWrite(ostream& out) const {
+void Paragraph::post_write(ostream& out) const {
     out << "</p>\n\n";
 }

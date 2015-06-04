@@ -10,8 +10,8 @@ class HtmlTag : public TextHolder {
     virtual void write_token(ostream& out) const;
 
     protected:
-    virtual void preWrite(ostream& out) const;
-    virtual void postWrite(ostream& out) const;
+    virtual void pre_write(ostream& out) const;
+    virtual void post_write(ostream& out) const;
 };
 
 #endif

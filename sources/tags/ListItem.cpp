@@ -21,10 +21,10 @@ string ListItem::containerName() const {
     return "ListItem";
 }
 
-void ListItem::preWrite(ostream& out) const {
+void ListItem::pre_write(ostream& out) const {
     out << "<li>";
 }
 
-void ListItem::postWrite(ostream& out) const {
+void ListItem::post_write(ostream& out) const {
     out << "</li>\n";
 }

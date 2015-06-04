@@ -13,11 +13,11 @@
 //         return "OrderedList";
 //     }
 
-//     void OrderedList::preWrite(ostream& out) const {
+//     void OrderedList::pre_write(ostream& out) const {
 //         out << "<ol>\n";
 //     }
 
-//     void OrderedList::postWrite(ostream& out) const {
+//     void OrderedList::post_write(ostream& out) const {
 //         out << "</ol>\n\n";
 //     }
 // }

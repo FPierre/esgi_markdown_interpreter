@@ -19,11 +19,11 @@
 //         }
 //     }
 
-//     void UnorderedList::preWrite(ostream& out) const {
+//     void UnorderedList::pre_write(ostream& out) const {
 //         out << "\n<ul>\n";
 //     }
 
-//     void UnorderedList::postWrite(ostream& out) const {
+//     void UnorderedList::post_write(ostream& out) const {
 //         out << "</ul>\n\n";
 //     }
 

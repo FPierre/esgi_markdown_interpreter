@@ -12,10 +12,10 @@ string BlockQuote::containerName() const {
     return "BlockQuote";
 }
 
-void BlockQuote::preWrite(ostream& out) const {
+void BlockQuote::pre_write(ostream& out) const {
     out << "<blockquote>\n";
 }
 
-void BlockQuote::postWrite(ostream& out) const {
+void BlockQuote::post_write(ostream& out) const {
     out << "\n</blockquote>\n";
 }

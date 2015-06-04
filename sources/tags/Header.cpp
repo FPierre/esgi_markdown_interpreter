@@ -13,10 +13,10 @@ bool Header::inhibitParagraphs() const {
     return true;
 }
 
-void Header::preWrite(ostream& out) const {
+void Header::pre_write(ostream& out) const {
     out << "<h" << mLevel << ">";
 }
 
-void Header::postWrite(ostream& out) const {
+void Header::post_write(ostream& out) const {
     out << "</h" << mLevel << ">\n";
 }

@@ -6,8 +6,8 @@
 // namespace markdown {
 //     class UnorderedList : public Container {
 //         protected:
-//         virtual void preWrite(ostream& out) const;
-//         virtual void postWrite(ostream& out) const;
+//         virtual void pre_write(ostream& out) const;
+//         virtual void post_write(ostream& out) const;
 
 //         public:
 //         UnorderedList(const TokenGroup& contents, bool paragraphMode = false);

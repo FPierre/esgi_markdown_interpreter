@@ -56,10 +56,10 @@ bool Token::inhibitParagraphs() const {
     return false;
 }
 
-void Token::preWrite(ostream& out) const {
+void Token::pre_write(ostream& out) const {
 
 }
 
-void Token::postWrite(ostream& out) const {
+void Token::post_write(ostream& out) const {
 
 }
