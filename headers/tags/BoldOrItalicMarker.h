@@ -12,7 +12,7 @@ class BoldOrItalicMarker : public Token {
     virtual bool isMatchedOpenMarker() const;
     virtual bool isMatchedCloseMarker() const;
     virtual void interprete_to_html(ostream& out) const;
-    virtual void writeToken(ostream& out) const;
+    virtual void write_token(ostream& out) const;
 
     bool isOpenMarker() const;
     char tokenCharacter() const;

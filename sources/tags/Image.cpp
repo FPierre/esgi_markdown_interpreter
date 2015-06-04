@@ -17,7 +17,7 @@
 //         out << "/>";
 //     }
 
-//     Image::void writeToken(ostream& out) const {
+//     Image::void write_token(ostream& out) const {
 //         out << "Image: " << mUrl << '\n';
 //     }
 // }

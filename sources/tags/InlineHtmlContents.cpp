@@ -4,6 +4,6 @@ InlineHtmlContents::InlineHtmlContents(const string& contents) : TextHolder(cont
 
 }
 
-void InlineHtmlContents::writeToken(ostream& out) const {
+void InlineHtmlContents::write_token(ostream& out) const {
     out << "InlineHtmlContents: " << *text() << '\n';
 }

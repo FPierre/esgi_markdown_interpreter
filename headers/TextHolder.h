@@ -20,7 +20,7 @@ class TextHolder : public Token {
     string encodeString(const string& src, int encodingFlags) const;
 
     virtual void interprete_to_html(ostream& out) const;
-    virtual void writeToken(ostream& out) const;
+    virtual void write_token(ostream& out) const;
     virtual optional<const string&> text() const;
     virtual bool canContainMarkup() const;
 };

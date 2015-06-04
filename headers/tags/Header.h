@@ -7,7 +7,7 @@ class Header : public TextHolder {
     public:
     Header(size_t level, const string& text);
 
-    virtual void writeToken(ostream& out) const;
+    virtual void write_token(ostream& out) const;
     virtual bool inhibitParagraphs() const;
 
     protected:

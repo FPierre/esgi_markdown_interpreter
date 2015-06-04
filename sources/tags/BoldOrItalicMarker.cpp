@@ -81,7 +81,8 @@ void BoldOrItalicMarker::interprete_to_html(ostream& out) const {
     }
 }
 
-void BoldOrItalicMarker::writeToken(ostream& out) const {
+void BoldOrItalicMarker::}
+write_token(ostream& out) const {
     if (!mDisabled) {
         if (mMatch != 0) {
             string type = (mSize == 1 ? "italic" : mSize == 2 ? "bold" : "italic&bold");

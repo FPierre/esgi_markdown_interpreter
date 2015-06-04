@@ -12,6 +12,6 @@ void EscapedCharacter::writeAsOriginal(ostream& out) const {
     out << '\\' << mChar;
 }
 
-void EscapedCharacter::writeToken(ostream& out) const {
+void EscapedCharacter::write_token(ostream& out) const {
     out << "EscapedCharacter: " << mChar << '\n';
 }

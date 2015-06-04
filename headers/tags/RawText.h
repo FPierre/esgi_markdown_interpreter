@@ -14,7 +14,7 @@ class RawText : public TextHolder {
     public:
     RawText(const string& text, bool canContainMarkup = true);
 
-    virtual void writeToken(ostream& out) const;
+    virtual void write_token(ostream& out) const;
     virtual optional<TokenGroup> processSpanElements(const LinkIds& idTable);
 
     private:

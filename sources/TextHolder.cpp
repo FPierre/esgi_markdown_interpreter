@@ -53,7 +53,7 @@ void TextHolder::interprete_to_html(ostream& out) const {
     postWrite(out);
 }
 
-void TextHolder::writeToken(ostream& out) const {
+void TextHolder::write_token(ostream& out) const {
     out << "TextHolder: " << mText << '\n';
 }
 

@@ -14,6 +14,6 @@ void CodeSpan::writeAsOriginal(ostream& out) const {
     out << '`' << *text() << '`';
 }
 
-void CodeSpan::writeToken(ostream& out) const {
+void CodeSpan::write_token(ostream& out) const {
     out << "CodeSpan: " << *text() << '\n';
 }

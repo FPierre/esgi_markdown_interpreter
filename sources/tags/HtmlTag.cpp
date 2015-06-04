@@ -4,7 +4,7 @@ HtmlTag::HtmlTag(const string& contents): TextHolder(contents, false, cAmps|cAng
 
 }
 
-void HtmlTag::writeToken(ostream& out) const {
+void HtmlTag::write_token(ostream& out) const {
     out << "HtmlTag: " << *text() << '\n';
 }
 

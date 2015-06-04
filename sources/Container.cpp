@@ -32,15 +32,15 @@
         postWrite(out);
     }
 
-    void Container::writeToken(ostream& out) const {
+    void Container::write_token(ostream& out) const {
         out << "Container: error!" << '\n';
     }
 
-    void Container::writeToken(size_t indent, ostream& out) const {
+    void Container::write_token(size_t indent, ostream& out) const {
         out << string(indent * 2, ' ') << containerName() << endl;
 
         for (CTokenGroupIter ii=mSubTokens.begin(), iie=mSubTokens.end(); ii!=iie; ++ii) {
-            (*ii)->writeToken(indent + 1, out);
+            (*ii)->write_token(indent + 1, out);
         }
     }
 

@@ -4,7 +4,7 @@ BlankLine::BlankLine(const string& actualContents) : TextHolder(actualContents, 
 
 }
 
-void BlankLine::writeToken(ostream& out) const {
+void BlankLine::write_token(ostream& out) const {
     out << "BlankLine: " << *text() << '\n';
 }
 

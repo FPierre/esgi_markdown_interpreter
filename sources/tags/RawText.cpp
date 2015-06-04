@@ -198,7 +198,7 @@ const char *cBlockTagInit[] = {
 
     }
 
-    void RawText::writeToken(ostream& out) const {
+    void RawText::write_token(ostream& out) const {
         out << "RawText: " << *text() << '\n';
     }
 

@@ -6,6 +6,6 @@ HtmlAnchorTag::HtmlAnchorTag(const string& url, const string& title) : TextHolde
 
 }
 
-void HtmlAnchorTag::writeToken(ostream& out) const {
+void HtmlAnchorTag::write_token(ostream& out) const {
     out << "HtmlAnchorTag: " << *text() << '\n';
 }

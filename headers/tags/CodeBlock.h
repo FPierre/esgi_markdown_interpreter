@@ -8,7 +8,7 @@ class CodeBlock : public TextHolder {
     CodeBlock(const string& actualContents);
 
     virtual void interprete_to_html(ostream& out) const;
-    virtual void writeToken(ostream& out) const;
+    virtual void write_token(ostream& out) const;
 };
 
 #endif

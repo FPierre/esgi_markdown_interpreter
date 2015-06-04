@@ -4,6 +4,6 @@ InlineHtmlComment::InlineHtmlComment(const string& contents) : TextHolder(conten
 
 }
 
-void InlineHtmlComment::writeToken(ostream& out) const {
+void InlineHtmlComment::write_token(ostream& out) const {
     out << "InlineHtmlComment: " << *text() << '\n';
 }

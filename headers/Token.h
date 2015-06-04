@@ -18,8 +18,8 @@ class Token {
 
     virtual void interprete_to_html(ostream&) const = 0;
     virtual void writeAsOriginal(ostream& out) const;
-    virtual void writeToken(ostream& out) const = 0;
-    virtual void writeToken(size_t indent, ostream& out) const;
+    virtual void write_token(ostream& out) const = 0;
+    virtual void write_token(size_t indent, ostream& out) const;
     virtual optional<TokenGroup> processSpanElements(const LinkIds& idTable);
     virtual optional<const string&> text() const;
     virtual bool canContainMarkup() const;

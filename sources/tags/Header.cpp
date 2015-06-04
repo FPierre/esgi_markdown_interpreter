@@ -5,7 +5,7 @@ Header::Header(size_t level, const string& text) : TextHolder(text, true, cAmps|
 
 }
 
-void Header::writeToken(ostream& out) const {
+void Header::write_token(ostream& out) const {
     out << "Header " << mLevel << ": " << *text() << '\n';
 }
 

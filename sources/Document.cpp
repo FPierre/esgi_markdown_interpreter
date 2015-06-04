@@ -765,7 +765,7 @@ void Document::write(ostream& out) {
  */
 void Document::write_tokens(ostream& out) {
     process();
-    mTokenContainer->writeToken(0, out);
+    mTokenContainer->write_token(0, out);
 }
 
 /**

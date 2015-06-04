@@ -10,6 +10,6 @@ void CodeBlock::interprete_to_html(ostream& out) const {
     out << "</code></pre>\n\n";
 }
 
-void CodeBlock::writeToken(ostream& out) const {
+void CodeBlock::write_token(ostream& out) const {
     out << "CodeBlock: " << *text() << '\n';
 }
