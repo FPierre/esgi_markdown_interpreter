@@ -8,7 +8,7 @@ void EscapedCharacter::interprete_to_html(ostream& out) const {
     out << mChar;
 }
 
-void EscapedCharacter::writeAsOriginal(ostream& out) const {
+void EscapedCharacter::write_as_original(ostream& out) const {
     out << '\\' << mChar;
 }
 

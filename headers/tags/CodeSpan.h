@@ -7,7 +7,7 @@ class CodeSpan : public TextHolder {
     public:
     CodeSpan(const string& actualContents);
     virtual void interprete_to_html(ostream& out) const;
-    virtual void writeAsOriginal(ostream& out) const;
+    virtual void write_as_original(ostream& out) const;
     virtual void write_token(ostream& out) const;
 };
 

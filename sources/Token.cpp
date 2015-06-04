@@ -7,7 +7,7 @@ Token::Token() {
 
 }
 
-void Token::writeAsOriginal(ostream& out) const {
+void Token::write_as_original(ostream& out) const {
     interprete_to_html(out);
 }
 

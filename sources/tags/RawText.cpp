@@ -338,7 +338,6 @@ string RawText::_processEscapedCharacters(const string& src) {
     return tgt;
 }
 
-// TODO: simplification
 string RawText::_processLinksImagesAndTags(const string& src, ReplacementTable& replacements, const LinkIds& idTable) {
     // NOTE: Kludge alert! The "inline link or image" regex should be...
     //
@@ -709,7 +708,7 @@ string RawText::_restoreProcessedItems(const string &src, ReplacementTable& repl
 
                 assert(n < replacements.size());
 
-                replacements[n]->writeAsOriginal(r);
+                replacements[n]->write_as_original(r);
             } // Otherwise just eat it
         }
         else {

@@ -10,7 +10,7 @@ void CodeSpan::interprete_to_html(ostream& out) const {
     out << "</code>";
 }
 
-void CodeSpan::writeAsOriginal(ostream& out) const {
+void CodeSpan::write_as_original(ostream& out) const {
     out << '`' << *text() << '`';
 }
 
