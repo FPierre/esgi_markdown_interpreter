@@ -1,32 +1,30 @@
-# h1
-## h2
-### h3
+> BlockQuote
 
-h1
+*Italic 1*
+
+_Italic 2_
+
+**Bold 1**
+
+__Bold 2__
+
+```c++
+CodeBlock
+```
+
+`CodeSpan`
+
+# Header 1
+## Header 1 bis
+Header 2
 ======
-
-h2
+Header 2 bis
 ------
 
-*Emphasis asterisks*
-_Emphasis underscores_
+[HtmlAnchorTag](https://www.google.com)
 
-**Strong emphasis asterisks**
-__Strong emphasis underscores__
+* ListItem 1
+* ListItem 1 bis
 
-**Combined emphasis asterisks and _combined emphasis underscores_**
-
-[link](https://www.google.com)
-
-`Inline code back-ticks`
-
-> Blockquotes
-
-* Item 1
-* Item 2
-* Item 3
-
-- Item 1
-- Item 2
-- Item 3
-
+- ListItem 2
+- ListItem 2 bis
