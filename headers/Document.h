@@ -42,10 +42,10 @@ class Document {
 
     bool getline(istream& in, string& line);
     void process();
-    void mergeMultilineHtmlTags();
-    void processInlineHtmlAndReferences();
-    void processBlocksItems(TokenPtr inTokenContainer);
-    void processParagraphLines(TokenPtr inTokenContainer);
+    void merge_multiline_html_tags();
+    void process_inline_html_and_references();
+    void process_blocks_items(TokenPtr inTokenContainer);
+    void process_paragraph_lines(TokenPtr inTokenContainer);
 };
 
 #endif

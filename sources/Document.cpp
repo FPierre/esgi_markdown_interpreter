@@ -773,10 +773,10 @@ void Document::write_tokens(ostream& out) {
  */
 void Document::process() {
     if (!mProcessed) {
-        mergeMultilineHtmlTags();
-        processInlineHtmlAndReferences();
-        processBlocksItems(mTokenContainer);
-        processParagraphLines(mTokenContainer);
+        merge_multiline_html_tags();
+        process_inline_html_and_references();
+        process_blocks_items(mTokenContainer);
+        process_paragraph_lines(mTokenContainer);
 
         mTokenContainer->process_span_elements(*mIdTable);
 
@@ -787,7 +787,7 @@ void Document::process() {
 /**
  *
  */
-void Document::mergeMultilineHtmlTags() {
+void Document::merge_multiline_html_tags() {
     // Ensemble des caractères de début de balises HTML
     static const boost::regex html_start("<((/?)([a-zA-Z0-9]+)(?:( +[a-zA-Z0-9]+?(?: ?= ?(\"|').*?\\5))*? */? *))$");
     // Ensemble des caractères de fin de balises HTML
@@ -817,7 +817,7 @@ void Document::mergeMultilineHtmlTags() {
     tokens->swapSubtokens(processed);
 }
 
-void Document::processInlineHtmlAndReferences() {
+void Document::process_inline_html_and_references() {
     TokenGroup processed;
 
     Container *tokens = dynamic_cast<Container *>(mTokenContainer.get());
@@ -860,7 +860,7 @@ void Document::processInlineHtmlAndReferences() {
     tokens->swapSubtokens(processed);
 }
 
-void Document::processBlocksItems(TokenPtr inTokenContainer) {
+void Document::process_blocks_items(TokenPtr inTokenContainer) {
     if (!inTokenContainer->is_container()) {
         return;
     }
@@ -882,7 +882,7 @@ void Document::processBlocksItems(TokenPtr inTokenContainer) {
             if (!subitem) subitem = parseCodeBlock(ii, iie);
 
             if (subitem) {
-                processBlocksItems(*subitem);
+                process_blocks_items(*subitem);
                 processed.push_back(*subitem);
 
                 if (ii == iie) {
@@ -896,7 +896,7 @@ void Document::processBlocksItems(TokenPtr inTokenContainer) {
             }
         }
         else if ((*ii)->is_container()) {
-            processBlocksItems(*ii);
+            process_blocks_items(*ii);
             processed.push_back(*ii);
         }
     }
@@ -904,7 +904,7 @@ void Document::processBlocksItems(TokenPtr inTokenContainer) {
     tokens->swapSubtokens(processed);
 }
 
-void Document::processParagraphLines(TokenPtr inTokenContainer) {
+void Document::process_paragraph_lines(TokenPtr inTokenContainer) {
     Container *tokens = dynamic_cast<Container *>(inTokenContainer.get());
 
     assert(tokens != 0);
@@ -913,7 +913,7 @@ void Document::processParagraphLines(TokenPtr inTokenContainer) {
 
     for (TokenGroup::const_iterator ii = tokens->subTokens().begin(), iie = tokens->subTokens().end(); ii != iie; ++ii) {
         if ((*ii)->is_container()) {
-            processParagraphLines(*ii);
+            process_paragraph_lines(*ii);
         }
     }
 
