@@ -785,7 +785,7 @@ void Document::process() {
 }
 
 /**
- *
+ * S'applique forcément sur les balises HTML de type Container (imbrication impossible sinon)
  */
 void Document::merge_multiline_html_tags() {
     // Ensemble des caractères de début de balises HTML
@@ -795,18 +795,30 @@ void Document::merge_multiline_html_tags() {
 
     TokenGroup processed;
 
+    // Cast le token courant (classe ToekPtr) en classe Container
+    // mTokenContainer.get() retourne un pointeur de TokenPtr
     Container *tokens = dynamic_cast<Container *>(mTokenContainer.get());
 
-    assert(tokens != 0);
+    // simplification
+    // assert(tokens != 0);
 
-    for (TokenGroup::const_iterator i = tokens->subTokens().begin(), ie = tokens->subTokens().end(); i != ie; ++i) {
+    // Pour tous les sous tokens du token courant
+    for (TokenGroup::const_iterator i = tokens->subTokens().begin(), ie = tokens->subTokens().end(); i != ie; i++) {
+        // Si le sous token courant a un texte
+        // et qu'il correspond à la regex de caractère de début de balise HTML
         if ((*i)->text() && boost::regex_match(*(*i)->text(), html_start)) {
+            // Retient le sous token courant
             TokenGroup::const_iterator i2 = i;
-            ++i2;
 
+            i2++;
+
+            // Si le sous token courant n'est pas le dernier du token courant
+            // et qu'il a un texte
+            // et qu'il correspond à la regex de caractère de fin de balise HTML
             if (i2 != tokens->subTokens().end() && (*i2)->text() && boost::regex_match(*(*i2)->text(), html_end)) {
+                // Merge les textes du sous token courant et token courant
                 processed.push_back(TokenPtr(new RawText(*(*i)->text() + ' ' + *(*i2)->text())));
-                ++i;
+                i++;
                 continue;
             }
         }
@@ -814,7 +826,7 @@ void Document::merge_multiline_html_tags() {
         processed.push_back(*i);
     }
 
-    tokens->swapSubtokens(processed);
+    tokens->swap_subtokens(processed);
 }
 
 void Document::process_inline_html_and_references() {
@@ -857,9 +869,12 @@ void Document::process_inline_html_and_references() {
         processed.push_back(*ii);
     }
 
-    tokens->swapSubtokens(processed);
+    tokens->swap_subtokens(processed);
 }
 
+/**
+ *
+ */
 void Document::process_blocks_items(TokenPtr inTokenContainer) {
     if (!inTokenContainer->is_container()) {
         return;
@@ -901,7 +916,7 @@ void Document::process_blocks_items(TokenPtr inTokenContainer) {
         }
     }
 
-    tokens->swapSubtokens(processed);
+    tokens->swap_subtokens(processed);
 }
 
 void Document::process_paragraph_lines(TokenPtr inTokenContainer) {
@@ -950,5 +965,5 @@ void Document::process_paragraph_lines(TokenPtr inTokenContainer) {
     // Make sure the last paragraph is properly flushed too.
     flushParagraph(paragraphText, paragraphTokens, processed, noPara);
 
-    tokens->swapSubtokens(processed);
+    tokens->swap_subtokens(processed);
 }

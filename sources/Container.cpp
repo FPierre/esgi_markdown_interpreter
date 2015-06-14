@@ -13,7 +13,11 @@ void Container::appendSubtokens(TokenGroup& tokens) {
     mSubTokens.splice(mSubTokens.end(), tokens);
 }
 
-void Container::swapSubtokens(TokenGroup& tokens) {
+/**
+ * Interverti le contenu de mSubTokens avec tokens (les 2 sont de classe TokenGroup)
+ * http://www.cplusplus.com/reference/list/list/swap/
+ */
+void Container::swap_subtokens(TokenGroup& tokens) {
     mSubTokens.swap(tokens);
 }
 
@@ -78,7 +82,7 @@ optional<TokenGroup> Container::process_span_elements(const LinkIds& idTable) {
         }
     }
 
-    swapSubtokens(t);
+    swap_subtokens(t);
 
     return none;
 }

@@ -9,7 +9,7 @@ class Container : public Token {
 
     const TokenGroup& subTokens() const;
     void appendSubtokens(TokenGroup& tokens);
-    void swapSubtokens(TokenGroup& tokens);
+    void swap_subtokens(TokenGroup& tokens);
 
     virtual bool is_container() const;
     virtual void interprete_to_html(ostream& out) const;
