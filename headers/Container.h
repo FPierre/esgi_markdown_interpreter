@@ -15,7 +15,7 @@ class Container : public Token {
     virtual void interprete_to_html(ostream& out) const;
     virtual void write_token(ostream& out) const;
     virtual void write_token(size_t indent, ostream& out) const;
-    virtual optional<TokenGroup> processSpanElements(const LinkIds& idTable);
+    virtual optional<TokenGroup> process_span_elements(const LinkIds& idTable);
     virtual TokenPtr clone(const TokenGroup& newContents) const;
     virtual string container_name() const;
 

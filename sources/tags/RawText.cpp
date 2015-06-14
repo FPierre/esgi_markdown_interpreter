@@ -197,7 +197,7 @@ void RawText::write_token(ostream& out) const {
     out << "RawText: " << *text() << '\n';
 }
 
-optional<TokenGroup> RawText::processSpanElements(const LinkIds& idTable) {
+optional<TokenGroup> RawText::process_span_elements(const LinkIds& idTable) {
     if (!canContainMarkup()) {
         return none;
     }

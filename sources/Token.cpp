@@ -16,7 +16,7 @@ void Token::write_token(size_t indent, ostream& out) const {
     write_token(out);
 }
 
-optional<TokenGroup> Token::processSpanElements(const LinkIds& idTable) {
+optional<TokenGroup> Token::process_span_elements(const LinkIds& idTable) {
     return none;
 }
 

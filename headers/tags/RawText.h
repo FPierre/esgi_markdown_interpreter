@@ -15,7 +15,7 @@ class RawText : public TextHolder {
     RawText(const string& text, bool canContainMarkup = true);
 
     virtual void write_token(ostream& out) const;
-    virtual optional<TokenGroup> processSpanElements(const LinkIds& idTable);
+    virtual optional<TokenGroup> process_span_elements(const LinkIds& idTable);
 
     private:
     typedef vector<TokenPtr> ReplacementTable;

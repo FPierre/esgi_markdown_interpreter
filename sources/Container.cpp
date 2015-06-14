@@ -43,12 +43,12 @@ void Container::write_token(size_t indent, ostream& out) const {
     }
 }
 
-optional<TokenGroup> Container::processSpanElements(const LinkIds& idTable) {
+optional<TokenGroup> Container::process_span_elements(const LinkIds& idTable) {
     TokenGroup t;
 
     for (CTokenGroupIter ii = mSubTokens.begin(), iie = mSubTokens.end(); ii != iie; ++ii) {
         if ((*ii)->text()) {
-            optional<TokenGroup> subt = (*ii)->processSpanElements(idTable);
+            optional<TokenGroup> subt = (*ii)->process_span_elements(idTable);
 
             if (subt) {
                 if (subt->size()>1) {
@@ -63,7 +63,7 @@ optional<TokenGroup> Container::processSpanElements(const LinkIds& idTable) {
             }
         }
         else {
-            optional<TokenGroup> subt = (*ii)->processSpanElements(idTable);
+            optional<TokenGroup> subt = (*ii)->process_span_elements(idTable);
 
             if (subt) {
                 const Container *c = dynamic_cast<const Container *>((*ii).get());

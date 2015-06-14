@@ -778,7 +778,7 @@ void Document::process() {
         processBlocksItems(mTokenContainer);
         processParagraphLines(mTokenContainer);
 
-        mTokenContainer->processSpanElements(*mIdTable);
+        mTokenContainer->process_span_elements(*mIdTable);
 
         mProcessed = true;
     }
